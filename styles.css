@@ -107,7 +107,9 @@ body {
 
 /* Centred slide content */
 .slide { 
-  width:100vw; 
+  width: 100vw;
+  min-width: 100vw; /* prevent flex shrinking */
+  flex-shrink: 0; /* prevent flex shrinking in horizontal container */
   height:100%; 
   padding: 0 var(--gutter-x) var(--gutter-bottom) var(--gutter-x); 
   display:flex; 
@@ -154,7 +156,14 @@ body {
 }
 
 /* Letters track (full height; each .slide handles bottom padding) */
-#lwrap{ height: 100%; }
+#lwrap{ 
+  height: 100%;
+  width: 700vw !important; /* 7 slides × 100vw each - override Tailwind inset-0 width constraint */
+  display: flex; /* horizontal layout for slides */
+  flex-direction: row; /* explicitly set horizontal direction */
+  left: 0; /* maintain absolute positioning from inset-0 */
+  top: 0;
+}
 
 /* Bottom nav buttons */
 .navbtn{
