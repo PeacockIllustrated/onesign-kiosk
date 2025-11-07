@@ -1,5 +1,24 @@
+/**
+ * Onesign Kiosk - Mobile Sign Configuration Flow
+ * 
+ * Key Features:
+ * - Centered grids with safe-area support (iOS notch, Android cutouts)
+ * - Next button gated by validation (Height Custom requires numeric value > 0)
+ * - Auto-advance on selection (except Height Custom)
+ * - Smart skip: Illumination Colour skipped when No Illumination or Foamex material
+ * - Tappable progress dots with validation (cannot jump forward past incomplete slide)
+ * - Swipe gestures (left=next, right=back) with configurable thresholds
+ * - Keyboard support (ArrowLeft/Right) for desktop testing
+ * - Haptic feedback via Vibration API (guarded, no errors on unsupported browsers)
+ * - Full accessibility: semantic buttons, aria attributes, visible focus rings
+ */
+
 // --------- CONFIG ---------
 const ENABLE_HAPTICS = true; // flip to false to disable vibrations
+
+// Swipe gesture thresholds (tunable constants)
+const SWIPE_THRESHOLD = 48; // minimum horizontal distance in px to trigger swipe
+const SWIPE_RESTRAINT = 56; // maximum vertical distance in px to allow horizontal swipe
 
 // --------- SW register ---------
 window.addEventListener('load', () => {
@@ -47,19 +66,28 @@ const dots = document.getElementById('dots');
 let step = 0;             // 0..6
 const TOTAL = 7;
 
+// Render progress dots with validation: cannot jump forward past incomplete current slide
 function renderDots() {
   if(!dots) return;
-  dots.innerHTML = Array.from({length: TOTAL}, (_,i)=>
-    `<button class="inline-block rounded-full ${i===step?'bg-black':'bg-black/20'}"
-             data-dot="${i}" role="tab" aria-selected="${i===step}"
-             style="width:8px;height:8px"></button>`
-  ).join('');
+  dots.innerHTML = Array.from({length: TOTAL}, (_,i)=>{
+    const isActive = i === step;
+    const canNavigate = i <= step || (i > step && canLeaveStep(step));
+    return `<button class="inline-block rounded-full ${isActive?'bg-black':'bg-black/20'}"
+             data-dot="${i}" role="tab" aria-selected="${isActive}"
+             ${!canNavigate ? 'disabled aria-disabled="true"' : ''}
+             style="width:8px;height:8px;${!canNavigate ? 'opacity:0.35;pointer-events:none;' : ''}"></button>`;
+  }).join('');
 
-  // tappable dots
+  // Tappable dots: only allow navigation if current step is valid or going backward
   dots.querySelectorAll('[data-dot]').forEach(btn=>{
+    const targetStep = Number(btn.dataset.dot);
     btn.addEventListener('click', ()=>{
-      if(!canLeaveStep(step)) return vibrate(4);
-      go(Number(btn.dataset.dot));
+      // Can always go backward, but forward requires current step to be valid
+      if(targetStep > step && !canLeaveStep(step)){
+        vibrate(4); // error feedback
+        return;
+      }
+      go(targetStep);
       vibrate(6);
     });
   });
@@ -82,10 +110,12 @@ function setActive(group, value){
   });
 }
 
+// Validation: determines if user can leave current step
+// Height "Custom" requires a numeric value > 0 before enabling Next
 function canLeaveStep(s){
   switch(s){
     case 0: return !!L.material;
-    case 1: return !!L.height || (L.height==='Custom' && !!L.heightCustom);
+    case 1: return !!L.height && (L.height !== 'Custom' || (L.heightCustom && L.heightCustom > 0));
     case 2: return L.material==='Foamex' ? true : !!L.illumination;
     case 3: return (L.material==='Foamex' || L.illumination==='No Illumination') ? true : !!L.illuminationColour;
     case 4: return !!L.fixing;
@@ -110,6 +140,12 @@ document.querySelectorAll('[data-choice]').forEach(btn=>{
       if(v!=='Custom'){
         L.heightCustom=null;
         const hc=document.getElementById('heightCustom'); if(hc) hc.value='';
+      } else {
+        // Focus the custom input when Custom is selected
+        const hc=document.getElementById('heightCustom'); 
+        if(hc) { 
+          setTimeout(()=>hc.focus(), 100); // slight delay for smooth UX
+        }
       }
     }
     if(g==='illumination'){
@@ -134,15 +170,27 @@ document.querySelectorAll('[data-choice]').forEach(btn=>{
   });
 });
 
-// Custom height input
+// Custom height input: requires numeric value > 0 before enabling Next
 const heightCustomInput = document.getElementById('heightCustom');
 if(heightCustomInput){
   heightCustomInput.addEventListener('input', e=>{
     const mm = Number(e.target.value||0);
-    if(mm>0){
-      L.height='Custom'; L.heightCustom=mm; setActive('height','Custom');
-      updateSummary(); updateNextEnabled();
+    if(mm > 0){
+      L.height = 'Custom';
+      L.heightCustom = mm;
+      setActive('height', 'Custom');
+      updateSummary();
+      updateNextEnabled();
+      vibrate(8); // subtle feedback on valid input
+    } else {
+      L.heightCustom = null;
+      updateNextEnabled();
     }
+  });
+  
+  // Also handle blur to validate on exit
+  heightCustomInput.addEventListener('blur', ()=>{
+    updateNextEnabled();
   });
 }
 
@@ -159,15 +207,28 @@ function enforceInstallRules(){
   if(needsInstall){ L.install='Yes'; setActive('install','Yes'); }
 }
 
-// Smart skip: colour step is 3; if no illumination or Foamex, jump to 4
+// Smart skip logic: If Illumination = "No Illumination" or Material = "Foamex", skip step 3 (Illumination Colour)
+// When on step 2 (Illumination) and conditions are met, jump directly to step 4 (Fixing)
 function computeNextStep(cur){
-  if(cur===2 && (L.illumination==='No Illumination' || L.material==='Foamex')){ return 4; }
-  return clamp(cur+1, 0, TOTAL-1);
+  if(cur === 2 && (L.illumination === 'No Illumination' || L.material === 'Foamex')){
+    return 4; // Skip step 3 (Illumination Colour)
+  }
+  return clamp(cur + 1, 0, TOTAL - 1);
 }
 
+// Back navigation: skip step 3 (Illumination Colour) if it was skipped going forward
 lettersBack.addEventListener('click', ()=>{
-  if(step===0){ hideRight(letters); show(catalogue); }
-  else { go(step-1); }
+  if(step===0){ 
+    hideRight(letters); 
+    show(catalogue); 
+  } else {
+    let prevStep = step - 1;
+    // If going back from step 4 and step 3 was skipped, go to step 2 instead
+    if(step === 4 && (L.illumination === 'No Illumination' || L.material === 'Foamex')){
+      prevStep = 2;
+    }
+    go(prevStep);
+  }
   vibrate();
 });
 
@@ -178,29 +239,46 @@ lettersNext.addEventListener('click', ()=>{
   vibrate();
 });
 
-// Swipe gestures
+// Swipe gestures: left = Next (validate first), right = Back (or to Catalogue when on first Letters slide)
+// Ignore mostly vertical gestures using restraint threshold
 (()=>{
   let startX=0, startY=0, dragging=false;
-  const threshold=48, restraint=56; // px
 
   lwrap.addEventListener('touchstart', (e)=>{
-    const t=e.changedTouches[0]; startX=t.pageX; startY=t.pageY; dragging=true;
+    const t=e.changedTouches[0];
+    startX=t.pageX;
+    startY=t.pageY;
+    dragging=true;
   }, {passive:true});
 
   lwrap.addEventListener('touchend', (e)=>{
     if(!dragging) return;
     const t=e.changedTouches[0];
-    const dx=t.pageX-startX, dy=t.pageY-startY;
-    if(Math.abs(dx)>=threshold && Math.abs(dy)<=restraint){
-      if(dx<0){ // left -> next
+    const dx=t.pageX-startX;
+    const dy=t.pageY-startY;
+    
+    // Only trigger if horizontal movement exceeds threshold and vertical is within restraint
+    if(Math.abs(dx) >= SWIPE_THRESHOLD && Math.abs(dy) <= SWIPE_RESTRAINT){
+      if(dx < 0){ // left swipe -> next
         if(canLeaveStep(step)){
-          if(step===6){ openSummary(); }
+          if(step === 6){ openSummary(); }
           else { go(computeNextStep(step)); }
           vibrate();
+        } else {
+          vibrate(4); // error feedback
         }
-      }else{ // right -> back
-        if(step===0){ hideRight(letters); show(catalogue); }
-        else { go(step-1); }
+      } else { // right swipe -> back
+        if(step === 0){ 
+          hideRight(letters); 
+          show(catalogue); 
+        } else {
+          let prevStep = step - 1;
+          // If going back from step 4 and step 3 was skipped, go to step 2 instead
+          if(step === 4 && (L.illumination === 'No Illumination' || L.material === 'Foamex')){
+            prevStep = 2;
+          }
+          go(prevStep);
+        }
         vibrate();
       }
     }
@@ -208,10 +286,14 @@ lettersNext.addEventListener('click', ()=>{
   }, {passive:true});
 })();
 
-// Keyboard for desktop testing
+// Keyboard support for desktop testing: Left/Right arrows mirror Back/Next
 window.addEventListener('keydown', (e)=>{
-  if(e.key==='ArrowRight'){ lettersNext.click(); }
-  if(e.key==='ArrowLeft'){ lettersBack.click(); }
+  if(e.key === 'ArrowRight'){ 
+    lettersNext.click(); 
+  }
+  if(e.key === 'ArrowLeft'){ 
+    lettersBack.click(); 
+  }
 });
 
 // --------- SUMMARY SHEET ---------

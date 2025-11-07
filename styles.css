@@ -90,10 +90,12 @@ body {
   border:2px solid #111; border-radius:9999px; width:3.5rem; height:3.5rem;
   display:flex; align-items:center; justify-content:center;
   background:#fff; transition:transform .1s ease, background .15s ease, color .15s ease;
+  cursor:pointer;
 }
 .navbtn:active{ transform:scale(.97); }
+.navbtn:focus{ outline:2px solid rgba(0,0,0,.5); outline-offset:2px; }
 .navbtn--primary{ background:#111; color:#fff; }
-.navbtn[disabled]{ opacity:.35; pointer-events:none; }
+.navbtn[disabled]{ opacity:.35; pointer-events:none; cursor:not-allowed; }
 
 /* Motion safe */
 @media (prefers-reduced-motion: reduce) {
@@ -103,5 +105,32 @@ body {
 }
 
 /* Touch targets & typography */
-button { min-height: var(--touch); min-width: var(--touch); }
+button { 
+  min-height: var(--touch); 
+  min-width: var(--touch); 
+  cursor: pointer;
+}
+button:focus { 
+  outline: 2px solid rgba(0,0,0,.5); 
+  outline-offset: 2px; 
+}
+button[disabled] { 
+  cursor: not-allowed; 
+}
 h1, h2 { letter-spacing: .02em; }
+
+/* Progress dots accessibility */
+#dots button[role="tab"] {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 4px;
+}
+#dots button[role="tab"]:focus {
+  outline: 2px solid rgba(0,0,0,.5);
+  outline-offset: 2px;
+  border-radius: 50%;
+}
+#dots button[role="tab"][disabled] {
+  cursor: not-allowed;
+}
