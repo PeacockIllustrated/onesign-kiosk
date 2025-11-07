@@ -2,7 +2,7 @@
 :root{
   --topbar-h: 56px;
   --topbar: calc(var(--topbar-h) + env(safe-area-inset-top));
-  --bottomnav: calc(88px + env(safe-area-inset-bottom)); /* dots + arrows area */
+  --bottomnav: calc(96px + env(safe-area-inset-bottom)); /* dots + arrows */
   --touch: 48px;
 }
 
@@ -35,7 +35,8 @@ body {
   border-radius: 9999px;
   padding: 4px 10px;
   background: #fff;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: .04em;
 }
 
 /* Panels slide */
@@ -44,9 +45,7 @@ body {
   inset: 0;
   transition: transform .3s ease-out;
   will-change: transform;
-
-  /* push content below toolbar */
-  padding-top: var(--topbar);
+  padding-top: var(--topbar); /* push under toolbar */
 }
 
 /* Tile styling */
@@ -73,17 +72,28 @@ body {
 .heading__pill{
   display:inline-block;
   background:#111; color:#fff;
-  padding:.45rem 1rem;
+  padding:.55rem 1.1rem;
   border-radius:9999px;
-  font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  font-weight:800; letter-spacing:.10em; text-transform:uppercase;
+  box-shadow: 0 2px 0 #000;
 }
 
-/* Center the main grid content vertically in the available canvas */
-.slide { width:100vw; height:100%; padding: 0 2rem 6.5rem 2rem; display:flex; flex-direction:column; }
+/* Center each slide grid perfectly within available canvas */
+.slide { width:100vw; height:100%; padding: 0 2rem var(--bottomnav) 2rem; display:flex; flex-direction:column; }
 .slide-center{ flex:1; display:flex; align-items:center; justify-content:center; }
 
 /* Letters wrapper height accounts for toolbar + bottom area */
-#lwrap{ height: calc(100% - var(--bottomnav)); }
+#lwrap{ height: calc(100% - 0px); } /* full height; inner slides pad for bottom UI */
+
+/* Bottom nav buttons */
+.navbtn{
+  border:2px solid #111; border-radius:9999px; width:3.5rem; height:3.5rem;
+  display:flex; align-items:center; justify-content:center;
+  background:#fff; transition:transform .1s ease, background .15s ease, color .15s ease;
+}
+.navbtn:active{ transform:scale(.97); }
+.navbtn--primary{ background:#111; color:#fff; }
+.navbtn[disabled]{ opacity:.35; pointer-events:none; }
 
 /* Motion-safe */
 @media (prefers-reduced-motion: reduce) {
