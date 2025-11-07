@@ -5,6 +5,10 @@ window.addEventListener('load', () => {
   }
 });
 
+// ---------- UTIL ----------
+const vibrate = (ms=15) => { try { navigator.vibrate && navigator.vibrate(ms); } catch{} };
+const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
 // ---------- PANEL NAV ----------
 const gate = document.getElementById('gate');
 const catalogue = document.getElementById('catalogue');
@@ -19,10 +23,10 @@ function show(el){ el.classList.remove('translate-x-full','-translate-x-full'); 
 function hideLeft(el){ el.classList.remove('translate-x-0','translate-x-full'); el.classList.add('-translate-x-full'); }
 function hideRight(el){ el.classList.remove('translate-x-0','-translate-x-full'); el.classList.add('translate-x-full'); }
 
-internalBtn.addEventListener('click', ()=>{ hideLeft(gate); show(catalogue); });
-externalBtn.addEventListener('click', ()=>{ hideLeft(gate); show(catalogue); });
-backFromCatalogue.addEventListener('click', ()=>{ hideRight(catalogue); show(gate); });
-lettersCard.addEventListener('click', ()=>{ hideLeft(catalogue); show(letters); go(0); });
+internalBtn.addEventListener('click', ()=>{ hideLeft(gate); show(catalogue); vibrate(); });
+externalBtn.addEventListener('click', ()=>{ hideLeft(gate); show(catalogue); vibrate(); });
+backFromCatalogue.addEventListener('click', ()=>{ hideRight(catalogue); show(gate); vibrate(); });
+lettersCard.addEventListener('click', ()=>{ hideLeft(catalogue); show(letters); go(0); vibrate(); });
 
 // ---------- LETTERS FLOW ----------
 const L = {
@@ -37,16 +41,26 @@ const lettersBack = document.getElementById('lettersBack');
 const lettersNext = document.getElementById('lettersNext');
 const dots = document.getElementById('dots');
 
-let step = 0;          // 0..6
+let step = 0;             // 0..6
 const TOTAL = 7;
-
-function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
 function renderDots() {
   if(!dots) return;
   dots.innerHTML = Array.from({length: TOTAL}, (_,i)=>
-    `<span class="inline-block rounded-full ${i===step?'bg-black':'bg-black/20'}" style="width:8px;height:8px;"></span>`
+    `<button class="inline-block rounded-full ${i===step?'bg-black':'bg-black/20'}"
+             data-dot="${i}" role="tab" aria-selected="${i===step}"
+             style="width:8px;height:8px"></button>`
   ).join('');
+
+  // make dots tappable
+  dots.querySelectorAll('[data-dot]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      // guard: don’t allow jumping forward if current slide not answered
+      if(!canLeaveStep(step)) return vibrate(4);
+      go(Number(btn.dataset.dot));
+      vibrate(6);
+    });
+  });
 }
 
 function go(n){
@@ -55,19 +69,39 @@ function go(n){
   enforceInstallRules();
   updateSummary();
   renderDots();
+  updateNextEnabled();
 }
 
-// Selection handling
 function setActive(group, value){
   document.querySelectorAll(`[data-choice="${group}"]`).forEach(el=>{
     const active = el.dataset.value === value;
     el.classList.toggle('tile-active', active);
+    el.setAttribute('aria-pressed', String(active));
   });
 }
 
+function canLeaveStep(s){
+  switch(s){
+    case 0: return !!L.material;
+    case 1: return !!L.height || (L.height==='Custom' && !!L.heightCustom);
+    case 2: return L.material==='Foamex' ? true : !!L.illumination;
+    case 3: return (L.material==='Foamex' || L.illumination==='No Illumination') ? true : !!L.illuminationColour;
+    case 4: return !!L.fixing;
+    case 5: return !!L.install;
+    case 6: return true; // contact slide is optional for flow; summary confirms
+    default: return true;
+  }
+}
+
+function updateNextEnabled(){
+  lettersNext.disabled = !canLeaveStep(step);
+}
+
+// Selection handling + auto advance
 document.querySelectorAll('[data-choice]').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     const g = btn.dataset.choice; const v = btn.dataset.value;
+
     if(g==='material') L.material=v;
     if(g==='height') {
       L.height=v;
@@ -76,13 +110,26 @@ document.querySelectorAll('[data-choice]').forEach(btn=>{
         const hc=document.getElementById('heightCustom'); if(hc) hc.value='';
       }
     }
-    if(g==='illumination'){ L.illumination=v; if(v==='No Illumination'){ L.illuminationColour=null; } }
+    if(g==='illumination'){
+      L.illumination=v;
+      if(v==='No Illumination'){ L.illuminationColour=null; }
+    }
     if(g==='illuminationColour') L.illuminationColour=v;
     if(g==='fixing') L.fixing=v;
     if(g==='install') L.install=v;
+
     setActive(g,v);
     enforceInstallRules();
     updateSummary();
+    updateNextEnabled();
+    vibrate();
+
+    // Auto-advance logic (skip colour when appropriate)
+    const next = computeNextStep(step);
+    // Avoid auto jump if picking "Custom" height (needs input)
+    if(!(g==='height' && v==='Custom')){
+      go(next);
+    }
   });
 });
 
@@ -91,7 +138,10 @@ const heightCustomInput = document.getElementById('heightCustom');
 if(heightCustomInput){
   heightCustomInput.addEventListener('input', e=>{
     const mm = Number(e.target.value||0);
-    if(mm>0){ L.height='Custom'; L.heightCustom=mm; setActive('height','Custom'); updateSummary(); }
+    if(mm>0){
+      L.height='Custom'; L.heightCustom=mm; setActive('height','Custom');
+      updateSummary(); updateNextEnabled();
+    }
   });
 }
 
@@ -115,12 +165,52 @@ function computeNextStep(cur){
 }
 
 lettersBack.addEventListener('click', ()=>{
-  if(step===0){ hideRight(letters); show(catalogue); } else { go(step-1); }
+  if(step===0){ hideRight(letters); show(catalogue); }
+  else { go(step-1); }
+  vibrate();
 });
 
 lettersNext.addEventListener('click', ()=>{
+  if(!canLeaveStep(step)) return;
   if(step===6){ openSummary(); }
   else { go(computeNextStep(step)); }
+  vibrate();
+});
+
+// Swipe gestures (horizontal)
+(()=>{
+  let startX=0, startY=0, dragging=false;
+  const threshold=48, restraint=56; // px
+
+  lwrap.addEventListener('touchstart', (e)=>{
+    const t=e.changedTouches[0]; startX=t.pageX; startY=t.pageY; dragging=true;
+  }, {passive:true});
+
+  lwrap.addEventListener('touchend', (e)=>{
+    if(!dragging) return;
+    const t=e.changedTouches[0];
+    const dx=t.pageX-startX, dy=t.pageY-startY;
+    if(Math.abs(dx)>=threshold && Math.abs(dy)<=restraint){
+      if(dx<0){ // left swipe -> next
+        if(canLeaveStep(step)){
+          if(step===6){ openSummary(); }
+          else { go(computeNextStep(step)); }
+          vibrate();
+        }
+      }else{ // right swipe -> back
+        if(step===0){ hideRight(letters); show(catalogue); }
+        else { go(step-1); }
+        vibrate();
+      }
+    }
+    dragging=false;
+  }, {passive:true});
+})();
+
+// Keyboard arrows for desktop testing
+window.addEventListener('keydown', (e)=>{
+  if(e.key==='ArrowRight'){ lettersNext.click(); }
+  if(e.key==='ArrowLeft'){ lettersBack.click(); }
 });
 
 // ---------- SUMMARY SHEET ----------
@@ -168,6 +258,8 @@ if(pcInput){ pcInput.addEventListener('input', e=>{ L.postcode=e.target.value; u
 
 // ---------- INIT ----------
 go(0);
+updateNextEnabled();
+renderDots();
 
 // ---------- BASIC TESTS (console) ----------
 (function runTests(){
