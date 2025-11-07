@@ -13,7 +13,7 @@
   <!-- Tailwind utilities (keeps current utility classes) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Inter font (unchanged) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- App styles -->
   <link rel="stylesheet" href="./styles.css">
@@ -33,7 +33,7 @@
 
     <!-- Gate Panel -->
     <section id="gate" class="panel translate-x-0 flex flex-col items-center justify-center gap-8 px-8">
-      <h1 class="text-2xl font-semibold uppercase">Welcome to Onesign</h1>
+      <h1 class="text-2xl font-semibold">welcome to onesign</h1>
       <div class="flex flex-col gap-6 w-full max-w-md">
         <button id="externalBtn" class="tile py-10 flex flex-col items-center justify-center transition-all duration-200">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mb-4">
@@ -54,12 +54,13 @@
     <!-- Catalogue Panel -->
     <section id="catalogue" class="panel translate-x-full flex flex-col px-8">
       <header class="mb-2 text-center">
-        <div class="heading"><span class="heading__pill">Select a Product Type</span></div>
+        <div class="heading"><span class="heading__pill">select a product type</span></div>
       </header>
 
       <!-- Centre the grid in the usable canvas -->
       <div class="slide-center">
-        <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+        <div class="slide-scroll">
+          <div class="grid grid-cols-2 max-w-md mx-auto w-full">
           <button id="lettersCard" class="tile sq flex flex-col items-center justify-center gap-3 transition-all" aria-label="Letters">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l7.5-15 7.5 15M6 16.5h12" />
@@ -95,6 +96,7 @@
             <span class="text-lg font-medium">Internal Wall Signs</span>
           </button>
         </div>
+        </div>
       </div>
 
       <!-- Catalogue back -->
@@ -113,91 +115,105 @@
 
           <!-- 1. Material -->
           <section class="slide" data-step="0">
-            <div class="heading"><span class="heading__pill">Letter Material</span></div>
+            <div class="heading"><span class="heading__pill">letter material</span></div>
             <div class="slide-center">
-              <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+              <div class="slide-scroll">
+                <div class="grid grid-cols-2 max-w-md mx-auto w-full">
                 <button class="tile sq px-4" data-choice="material" data-value="MDF">MDF</button>
                 <button class="tile sq px-4" data-choice="material" data-value="Acrylic">Acrylic</button>
                 <button class="tile sq px-4" data-choice="material" data-value="Metal">Metal</button>
                 <button class="tile sq px-4" data-choice="material" data-value="Foamex">Foamex</button>
+              </div>
               </div>
             </div>
           </section>
 
           <!-- 2. Height -->
           <section class="slide" data-step="1">
-            <div class="heading"><span class="heading__pill">Letter Height</span></div>
+            <div class="heading"><span class="heading__pill">letter height</span></div>
             <div class="slide-center">
-              <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+              <div class="slide-scroll">
+                <div class="grid grid-cols-2 max-w-md mx-auto w-full">
                 <button class="tile sq px-4" data-choice="height" data-value="Small (10mm)">Small<br/>(10mm)</button>
                 <button class="tile sq px-4" data-choice="height" data-value="Medium (25mm)">Medium<br/>(25mm)</button>
                 <button class="tile sq px-4" data-choice="height" data-value="Large (50mm)">Large<br/>(50mm)</button>
                 <button class="tile sq px-4" data-choice="height" data-value="XL (75mm)">XL<br/>(75mm)</button>
-                <div class="col-span-2 grid grid-cols-2 gap-6">
+                <div class="col-span-2 grid grid-cols-2">
                   <button class="tile sq px-4" data-choice="height" data-value="Custom">Custom</button>
                   <div class="tile sq">
                     <input id="heightCustom" type="number" min="5" placeholder="mm" class="w-20 text-center border border-black/20 rounded-lg py-2">
                   </div>
                 </div>
               </div>
+              </div>
             </div>
           </section>
 
           <!-- 3. Illumination Type -->
           <section class="slide" data-step="2">
-            <div class="heading"><span class="heading__pill">Letter Illumination</span></div>
+            <div class="heading"><span class="heading__pill">letter illumination</span></div>
             <div class="slide-center">
-              <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+              <div class="slide-scroll">
+                <div class="grid grid-cols-2 max-w-md mx-auto w-full">
                 <button class="tile sq px-4" data-choice="illumination" data-value="Face illuminated">Face</button>
                 <button class="tile sq px-4" data-choice="illumination" data-value="Edge illuminated">Edge</button>
                 <button class="tile sq px-4" data-choice="illumination" data-value="Halo illuminated">Halo</button>
                 <button class="tile sq px-4" data-choice="illumination" data-value="No Illumination">None</button>
+              </div>
               </div>
             </div>
           </section>
 
           <!-- 4. Illumination Colour -->
           <section class="slide" data-step="3">
-            <div class="heading"><span class="heading__pill">Illumination Colour</span></div>
+            <div class="heading"><span class="heading__pill">illumination colour</span></div>
             <div class="slide-center">
-              <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+              <div class="slide-scroll">
+                <div class="grid grid-cols-2 max-w-md mx-auto w-full">
                 <button class="tile sq px-4" data-choice="illuminationColour" data-value="Bright white">Bright</button>
                 <button class="tile sq px-4" data-choice="illuminationColour" data-value="Warm white">Warm</button>
                 <button class="tile sq px-4" data-choice="illuminationColour" data-value="RGB">RGB</button>
+              </div>
               </div>
             </div>
           </section>
 
           <!-- 5. Fixing -->
           <section class="slide" data-step="4">
-            <div class="heading"><span class="heading__pill">Fixing Method</span></div>
+            <div class="heading"><span class="heading__pill">fixing method</span></div>
             <div class="slide-center">
-              <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+              <div class="slide-scroll">
+                <div class="grid grid-cols-2 max-w-md mx-auto w-full">
                 <button class="tile sq px-4" data-choice="fixing" data-value="Direct to wall">Direct</button>
                 <button class="tile sq px-4" data-choice="fixing" data-value="Aluminium wall spacers">Spacers</button>
+              </div>
               </div>
             </div>
           </section>
 
           <!-- 6. Installation -->
           <section class="slide" data-step="5">
-            <div class="heading"><span class="heading__pill">Installation</span></div>
+            <div class="heading"><span class="heading__pill">installation</span></div>
             <div class="slide-center">
-              <div id="installGrid" class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+              <div class="slide-scroll">
+                <div id="installGrid" class="grid grid-cols-2 max-w-md mx-auto w-full">
                 <button class="tile sq px-4" data-choice="install" data-value="Yes">Install</button>
                 <button class="tile sq px-4" data-choice="install" data-value="Delivery with installation layout (+£35)">Layout +£35</button>
                 <button class="tile sq px-4 col-span-2" data-choice="install" data-value="Delivery">Delivery</button>
+              </div>
               </div>
             </div>
           </section>
 
           <!-- 7. Contact -->
           <section class="slide" data-step="6">
-            <div class="heading"><span class="heading__pill">Contact</span></div>
+            <div class="heading"><span class="heading__pill">contact</span></div>
             <div class="slide-center">
-              <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+              <div class="slide-scroll">
+                <div class="grid grid-cols-2 max-w-md mx-auto w-full">
                 <div class="tile sq"><input id="email" type="email" placeholder="Email" class="w-[80%] text-center border border-black/20 rounded-lg py-2"></div>
                 <div class="tile sq"><input id="postcode" type="text" placeholder="Postcode" class="w-[70%] text-center border border-black/20 rounded-lg py-2"></div>
+              </div>
               </div>
             </div>
           </section>
