@@ -1,15 +1,18 @@
-// Register SW on load
+// --------- CONFIG ---------
+const ENABLE_HAPTICS = true; // flip to false to disable vibrations
+
+// --------- SW register ---------
 window.addEventListener('load', () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
 });
 
-// ---------- UTIL ----------
-const vibrate = (ms=15) => { try { navigator.vibrate && navigator.vibrate(ms); } catch{} };
+// --------- UTIL ---------
+const vibrate = (ms=15) => { try { if (ENABLE_HAPTICS && navigator.vibrate) navigator.vibrate(ms); } catch{} };
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
-// ---------- PANEL NAV ----------
+// --------- PANEL NAV ---------
 const gate = document.getElementById('gate');
 const catalogue = document.getElementById('catalogue');
 const letters = document.getElementById('letters');
@@ -28,7 +31,7 @@ externalBtn.addEventListener('click', ()=>{ hideLeft(gate); show(catalogue); vib
 backFromCatalogue.addEventListener('click', ()=>{ hideRight(catalogue); show(gate); vibrate(); });
 lettersCard.addEventListener('click', ()=>{ hideLeft(catalogue); show(letters); go(0); vibrate(); });
 
-// ---------- LETTERS FLOW ----------
+// --------- LETTERS FLOW ---------
 const L = {
   material:null, height:null, heightCustom:null,
   illumination:null, illuminationColour:null,
@@ -52,10 +55,9 @@ function renderDots() {
              style="width:8px;height:8px"></button>`
   ).join('');
 
-  // make dots tappable
+  // tappable dots
   dots.querySelectorAll('[data-dot]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
-      // guard: don’t allow jumping forward if current slide not answered
       if(!canLeaveStep(step)) return vibrate(4);
       go(Number(btn.dataset.dot));
       vibrate(6);
@@ -88,7 +90,7 @@ function canLeaveStep(s){
     case 3: return (L.material==='Foamex' || L.illumination==='No Illumination') ? true : !!L.illuminationColour;
     case 4: return !!L.fixing;
     case 5: return !!L.install;
-    case 6: return true; // contact slide is optional for flow; summary confirms
+    case 6: return true; // contact optional for flow
     default: return true;
   }
 }
@@ -97,7 +99,7 @@ function updateNextEnabled(){
   lettersNext.disabled = !canLeaveStep(step);
 }
 
-// Selection handling + auto advance
+// selection + auto-advance
 document.querySelectorAll('[data-choice]').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     const g = btn.dataset.choice; const v = btn.dataset.value;
@@ -124,9 +126,8 @@ document.querySelectorAll('[data-choice]').forEach(btn=>{
     updateNextEnabled();
     vibrate();
 
-    // Auto-advance logic (skip colour when appropriate)
+    // Auto-advance (except when height=Custom which needs input)
     const next = computeNextStep(step);
-    // Avoid auto jump if picking "Custom" height (needs input)
     if(!(g==='height' && v==='Custom')){
       go(next);
     }
@@ -145,7 +146,7 @@ if(heightCustomInput){
   });
 }
 
-// Rules: spacers need installation
+// Install rule: spacers require installation
 function enforceInstallRules(){
   const grid=document.getElementById('installGrid'); if(!grid) return;
   const btns=[...grid.querySelectorAll('[data-choice="install"]')];
@@ -158,7 +159,7 @@ function enforceInstallRules(){
   if(needsInstall){ L.install='Yes'; setActive('install','Yes'); }
 }
 
-// Compute next step with conditional skip (Illumination Colour)
+// Smart skip: colour step is 3; if no illumination or Foamex, jump to 4
 function computeNextStep(cur){
   if(cur===2 && (L.illumination==='No Illumination' || L.material==='Foamex')){ return 4; }
   return clamp(cur+1, 0, TOTAL-1);
@@ -177,7 +178,7 @@ lettersNext.addEventListener('click', ()=>{
   vibrate();
 });
 
-// Swipe gestures (horizontal)
+// Swipe gestures
 (()=>{
   let startX=0, startY=0, dragging=false;
   const threshold=48, restraint=56; // px
@@ -191,13 +192,13 @@ lettersNext.addEventListener('click', ()=>{
     const t=e.changedTouches[0];
     const dx=t.pageX-startX, dy=t.pageY-startY;
     if(Math.abs(dx)>=threshold && Math.abs(dy)<=restraint){
-      if(dx<0){ // left swipe -> next
+      if(dx<0){ // left -> next
         if(canLeaveStep(step)){
           if(step===6){ openSummary(); }
           else { go(computeNextStep(step)); }
           vibrate();
         }
-      }else{ // right swipe -> back
+      }else{ // right -> back
         if(step===0){ hideRight(letters); show(catalogue); }
         else { go(step-1); }
         vibrate();
@@ -207,13 +208,13 @@ lettersNext.addEventListener('click', ()=>{
   }, {passive:true});
 })();
 
-// Keyboard arrows for desktop testing
+// Keyboard for desktop testing
 window.addEventListener('keydown', (e)=>{
   if(e.key==='ArrowRight'){ lettersNext.click(); }
   if(e.key==='ArrowLeft'){ lettersBack.click(); }
 });
 
-// ---------- SUMMARY SHEET ----------
+// --------- SUMMARY SHEET ---------
 const sheetWrap=document.getElementById('sheetWrap');
 const sheet=document.getElementById('sheet');
 const sheetBackdrop=document.getElementById('sheetBackdrop');
@@ -256,21 +257,21 @@ const pcInput=document.getElementById('postcode');
 if(emailInput){ emailInput.addEventListener('input', e=>{ L.email=e.target.value; updateSummary(); }); }
 if(pcInput){ pcInput.addEventListener('input', e=>{ L.postcode=e.target.value; updateSummary(); }); }
 
-// ---------- INIT ----------
+// --------- INIT ---------
 go(0);
 updateNextEnabled();
 renderDots();
 
-// ---------- BASIC TESTS (console) ----------
+// --------- BASIC TESTS (console) ---------
 (function runTests(){
   console.group('%cOnesign Kiosk Tests','color:#111;background:#eee;padding:2px 6px;border-radius:6px');
-  console.assert(computeNextStep(2)===3 || computeNextStep(2)===4, 'Next step from 2 should be 3 or 4 based on illumination.');
+  console.assert(computeNextStep(2)===3 || computeNextStep(2)===4, 'Next step from 2 should be 3 or 4.');
   const savedIll=L.illumination, savedMat=L.material;
   L.illumination='No Illumination'; L.material='MDF';
-  console.assert(computeNextStep(2)===4, 'When No Illumination, colour slide must be skipped.');
+  console.assert(computeNextStep(2)===4, 'No Illumination skips colour.');
   L.illumination=savedIll; L.material='Foamex';
-  console.assert(computeNextStep(2)===4, 'When Foamex, colour slide must be skipped.');
-  console.assert(clamp(-5,0,6)===0 && clamp(99,0,6)===6, 'Clamp should bound values.');
+  console.assert(computeNextStep(2)===4, 'Foamex skips colour.');
+  console.assert(clamp(-5,0,6)===0 && clamp(99,0,6)===6, 'Clamp bounds values.');
   L.material=savedMat;
   console.groupEnd();
 })();
