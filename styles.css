@@ -2,11 +2,14 @@
 :root{
   --topbar-h: 56px;
   --topbar: calc(var(--topbar-h) + env(safe-area-inset-top));
-  --bottomnav: calc(96px + env(safe-area-inset-bottom)); /* dots + arrows */
+  --navgap: 96px; /* dots + arrows visual block */
+  --bottomnav: calc(var(--navgap) + env(safe-area-inset-bottom));
   --gutter-x: 2rem;           /* horizontal padding for slides */
   --gutter-bottom: var(--bottomnav);
   --touch: 48px;
   --rhythm: 12px;             /* spacing unit */
+  --transition-fast: 0.15s;
+  --transition-base: 0.2s;
 }
 
 html, body { 
@@ -21,6 +24,7 @@ body {
   text-transform: none; /* content will be lowercase by copy */
   font-weight: 600;     /* semi-bold default */
   font-size: clamp(15px, 3.6vw, 16px);
+  letter-spacing: 0;
 }
 
 /* Toolbar */
@@ -53,7 +57,7 @@ body {
 .panel {
   position: absolute;
   inset: 0;
-  transition: transform .3s ease-out;
+  transition: transform var(--transition-base) ease-out;
   will-change: transform;
   padding-top: var(--topbar); /* sit below toolbar */
   overflow: hidden; /* prevent panel-level scrolling */
@@ -66,7 +70,7 @@ body {
   border-radius: 1rem;
   background: #fff;
   box-shadow: 0 0 0 rgba(0,0,0,0);
-  transition: transform .15s ease, box-shadow .2s ease;
+  transition: transform var(--transition-fast) ease, box-shadow var(--transition-base) ease, background var(--transition-fast) ease, color var(--transition-fast) ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -74,7 +78,7 @@ body {
   padding: .5rem;
 }
 .tile:hover { box-shadow: 0 8px 24px rgba(0,0,0,.12); }
-.tile:active { transform: scale(.97); }
+.tile:active { transform: scale(.98); }
 .tile:focus { outline: 2px solid rgba(0,0,0,.5); outline-offset: 2px; }
 .sq { aspect-ratio: 1 / 1; }
 
@@ -82,27 +86,28 @@ body {
 .heading{ 
   display:flex; 
   justify-content:center; 
-  margin-bottom: calc(var(--rhythm) * 0.75); 
+  margin-bottom: 0.5rem; 
 }
 .heading__pill{
   display:inline-block;
   background:#111; color:#fff;
-  padding:.6rem 1.2rem;
   border-radius:9999px;
+  padding:.6rem 1.2rem;
   font-weight:800; 
-  letter-spacing:.06em; /* tighter but readable */
+  font-size:2rem; 
+  line-height:1.1; 
+  letter-spacing:.02em;
   text-transform:none;  /* allow lowercase labels */
-  box-shadow: 0 2px 0 #000;
-  font-size: clamp(18px, 2.8vw, 22px);
-  line-height: 1;
+  box-shadow:0 2px 0 #000;
 }
 
-/* Gate title (welcome) */
+/* Gate title (welcome) - use pill style */
 #gate h1 {
   font-weight: 800;
   text-transform: none;
-  font-size: clamp(22px, 4.5vw, 28px);
-  letter-spacing: .01em;
+  font-size: 2rem;
+  line-height: 1.1;
+  letter-spacing: .02em;
 }
 
 /* Centred slide content */
@@ -111,7 +116,7 @@ body {
   min-width: 100vw; /* prevent flex shrinking */
   flex-shrink: 0; /* prevent flex shrinking in horizontal container */
   height:100%; 
-  padding: 0 var(--gutter-x) var(--gutter-bottom) var(--gutter-x); 
+  padding: 0 var(--gutter-x) var(--bottomnav) var(--gutter-x); 
   display:flex; 
   flex-direction:column; 
   overflow: hidden; /* prevent background/page scroll */
@@ -121,7 +126,7 @@ body {
   display:flex; 
   align-items:center; 
   justify-content:center; /* grid centred vertically and horizontally */
-  overflow: hidden;
+  overflow: hidden; /* clip inner scroll */
 }
 
 /* Scrollable wrapper for grids/inputs when content exceeds viewport */
@@ -152,7 +157,7 @@ body {
 
 /* Progress dots spacing */
 #dots { 
-  margin-top: calc(var(--rhythm) * 0.5); 
+  margin-bottom: 0.75rem; /* space above arrows */
 }
 
 /* Letters track (full height; each .slide handles bottom padding) */
@@ -163,13 +168,32 @@ body {
   flex-direction: row; /* explicitly set horizontal direction */
   left: 0; /* maintain absolute positioning from inset-0 */
   top: 0;
+  transition: transform var(--transition-base) ease-out;
+}
+
+/* Bottom nav container */
+.bottom-nav{
+  position:absolute; 
+  left:0; 
+  right:0;
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+  gap:10px;
+  bottom: max(1rem, env(safe-area-inset-bottom)); /* padding from screen bottom */
 }
 
 /* Bottom nav buttons */
 .navbtn{
-  border:2px solid #111; border-radius:9999px; width:3.5rem; height:3.5rem;
-  display:flex; align-items:center; justify-content:center;
-  background:#fff; transition:transform .1s ease, background .15s ease, color .15s ease;
+  border:2px solid #111; 
+  border-radius:9999px; 
+  width:3.5rem;
+  height:3.5rem;
+  display:flex; 
+  align-items:center; 
+  justify-content:center;
+  background:#fff; 
+  transition:transform var(--transition-fast) ease, background var(--transition-fast) ease, color var(--transition-fast) ease;
   cursor:pointer;
 }
 .navbtn:active{ transform:scale(.97); }
@@ -179,9 +203,7 @@ body {
 
 /* Motion safe */
 @media (prefers-reduced-motion: reduce) {
-  .panel { transition: none !important; }
-  #lwrap { transition: none !important; }
-  .tile, button { transition: none !important; }
+  .panel, #lwrap, .tile, button { transition: none !important; }
 }
 
 /* Touch targets & typography */
@@ -204,6 +226,7 @@ button[disabled] {
 h1, h2 { 
   letter-spacing: .02em; 
   font-weight: 800;
+  text-transform: none;
 }
 
 /* Progress dots accessibility */
