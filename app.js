@@ -1,4 +1,4 @@
-// Register SW on load (no functional change)
+// Register SW on load
 window.addEventListener('load', () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
