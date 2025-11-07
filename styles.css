@@ -1,0 +1,50 @@
+/* Base & page canvas */
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f4f4f4;
+  color: #111;
+}
+html, body { height: 100%; }
+
+/* Panel slide behaviour (kept identical) */
+.panel {
+  position: absolute;
+  inset: 0;
+  transition: transform .3s ease-out;
+  will-change: transform;
+}
+
+/* Active selection inversion for tiles */
+.tile-active { background: #111 !important; color: #fff !important; }
+
+/* Unified tile styling for sharper, tactile cards */
+.tile {
+  border: 2px solid #111;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 0 0 rgba(0,0,0,0);
+  transition: transform .15s ease, box-shadow .2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: .5rem;
+}
+.tile:hover { box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+.tile:active { transform: scale(.97); }
+.tile:focus { outline: 2px solid rgba(0,0,0,.5); outline-offset: 2px; }
+
+/* Perfect square helper */
+.sq { aspect-ratio: 1 / 1; }
+
+/* Motion-safe fallback */
+@media (prefers-reduced-motion: reduce) {
+  .panel { transition: none !important; }
+  #lwrap { transition: none !important; }
+  .tile, button { transition: none !important; }
+}
+
+/* Touch targets & headings */
+:root { --touch: 48px; }
+button { min-height: var(--touch); min-width: var(--touch); }
+h1, h2 { letter-spacing: .02em; }
