@@ -1,23 +1,56 @@
-/* Base & page canvas */
+/* Root layout and safe areas */
+:root{
+  --topbar-h: 56px;
+  --topbar: calc(var(--topbar-h) + env(safe-area-inset-top));
+  --bottomnav: calc(88px + env(safe-area-inset-bottom)); /* dots + arrows area */
+  --touch: 48px;
+}
+
+html, body { height: 100%; }
 body {
   font-family: 'Inter', sans-serif;
   background: #f4f4f4;
   color: #111;
 }
-html, body { height: 100%; }
 
-/* Panel slide behaviour (kept identical) */
+/* Toolbar */
+.topbar{
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: var(--topbar);
+  background: #fff;
+  border-bottom: 2px solid #111;
+  z-index: 30;
+}
+.topbar__inner{
+  height: calc(var(--topbar) - env(safe-area-inset-top));
+  padding: calc(env(safe-area-inset-top) + 8px) 12px 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.topbar__spacer{ flex: 1; }
+.topbar__chip{
+  border: 2px solid #111;
+  border-radius: 9999px;
+  padding: 4px 10px;
+  background: #fff;
+  font-weight: 600;
+}
+
+/* Panels slide */
 .panel {
   position: absolute;
   inset: 0;
   transition: transform .3s ease-out;
   will-change: transform;
+
+  /* push content below toolbar */
+  padding-top: var(--topbar);
 }
 
-/* Active selection inversion for tiles */
+/* Tile styling */
 .tile-active { background: #111 !important; color: #fff !important; }
-
-/* Unified tile styling for sharper, tactile cards */
 .tile {
   border: 2px solid #111;
   border-radius: 1rem;
@@ -33,18 +66,32 @@ html, body { height: 100%; }
 .tile:hover { box-shadow: 0 8px 24px rgba(0,0,0,.12); }
 .tile:active { transform: scale(.97); }
 .tile:focus { outline: 2px solid rgba(0,0,0,.5); outline-offset: 2px; }
-
-/* Perfect square helper */
 .sq { aspect-ratio: 1 / 1; }
 
-/* Motion-safe fallback */
+/* Headings: bold pill style */
+.heading{ display:flex; justify-content:center; margin-bottom:.25rem; }
+.heading__pill{
+  display:inline-block;
+  background:#111; color:#fff;
+  padding:.45rem 1rem;
+  border-radius:9999px;
+  font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+}
+
+/* Center the main grid content vertically in the available canvas */
+.slide { width:100vw; height:100%; padding: 0 2rem 6.5rem 2rem; display:flex; flex-direction:column; }
+.slide-center{ flex:1; display:flex; align-items:center; justify-content:center; }
+
+/* Letters wrapper height accounts for toolbar + bottom area */
+#lwrap{ height: calc(100% - var(--bottomnav)); }
+
+/* Motion-safe */
 @media (prefers-reduced-motion: reduce) {
   .panel { transition: none !important; }
   #lwrap { transition: none !important; }
   .tile, button { transition: none !important; }
 }
 
-/* Touch targets & headings */
-:root { --touch: 48px; }
+/* Touch targets & typography */
 button { min-height: var(--touch); min-width: var(--touch); }
 h1, h2 { letter-spacing: .02em; }
