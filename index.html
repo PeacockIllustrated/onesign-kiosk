@@ -10,26 +10,29 @@
   <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
   <title>Onesign Kiosk — Mobile Prototype (Monochrome)</title>
 
-  <!-- Tailwind via CDN to maintain exact utility classes -->
+  <!-- Tailwind utilities (unchanged) -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Inter font to match current styling -->
+  <!-- Inter font (unchanged) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Our extracted CSS -->
+  <!-- Our styles -->
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body class="overflow-hidden">
 
-  <!-- Tiny brand chip (uses existing SVG icon) -->
-  <div class="pointer-events-none absolute top-3 left-3 z-20 opacity-80">
-    <img src="./assets/icons/icon.svg" alt="Onesign" class="h-6 w-auto">
-  </div>
+  <!-- Top Toolbar -->
+  <header id="topbar" class="topbar">
+    <div class="topbar__inner">
+      <img src="./OneSignSVG.svg" alt="Onesign" class="h-6 w-auto select-none" draggable="false">
+      <div class="topbar__spacer"></div>
+      <!-- optional right-side tools (e.g., language) -->
+      <button class="topbar__chip" aria-label="Language">EN</button>
+    </div>
+  </header>
 
   <div id="viewport" class="relative w-screen h-screen overflow-hidden">
 
     <!-- Gate Panel -->
-    <section id="gate" class="panel translate-x-0 flex flex-col items-center justify-center gap-8 p-8">
+    <section id="gate" class="panel translate-x-0 flex flex-col items-center justify-center gap-8 px-8">
       <h1 class="text-2xl font-semibold uppercase">Welcome to Onesign</h1>
       <div class="flex flex-col gap-6 w-full max-w-md">
         <button id="externalBtn" class="tile py-10 flex flex-col items-center justify-center transition-all duration-200">
@@ -49,45 +52,49 @@
     </section>
 
     <!-- Catalogue Panel -->
-    <section id="catalogue" class="panel translate-x-full flex flex-col p-8">
-      <header class="mb-6 text-center">
-        <h2 class="text-xl font-semibold uppercase tracking-wider">Select a Product Type</h2>
+    <section id="catalogue" class="panel translate-x-full flex flex-col px-8">
+      <header class="mb-2 text-center">
+        <div class="heading"><span class="heading__pill">Select a Product Type</span></div>
       </header>
-      <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-        <button id="lettersCard" class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l7.5-15 7.5 15M6 16.5h12" />
-          </svg>
-          <span class="text-lg font-medium">Letters</span>
-        </button>
-        <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><rect x="3" y="6" width="18" height="12" rx="2" /></svg>
-          <span class="text-lg font-medium">Panel + Letters</span>
-        </button>
-        <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M3 12h18M3 18h18" /></svg>
-          <span class="text-lg font-medium">Vinyl</span>
-        </button>
-        <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m-9-9h18" /></svg>
-          <span class="text-lg font-medium">Neon</span>
-        </button>
-        <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><rect x="5" y="5" width="14" height="14" rx="1.5" /></svg>
-          <span class="text-lg font-medium">Window Decal</span>
-        </button>
-        <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v20M4 6h16M4 12h16M4 18h16" /></svg>
-          <span class="text-lg font-medium">Wayfinding</span>
-        </button>
-        <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18v12H3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 9h12M6 15h12" /></svg>
-          <span class="text-lg font-medium">Point of Sale</span>
-        </button>
-        <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><rect x="4" y="8" width="16" height="8" rx="1.5" /></svg>
-          <span class="text-lg font-medium">Internal Wall Signs</span>
-        </button>
+
+      <!-- centred grid -->
+      <div class="slide-center">
+        <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+          <button id="lettersCard" class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l7.5-15 7.5 15M6 16.5h12" />
+            </svg>
+            <span class="text-lg font-medium">Letters</span>
+          </button>
+          <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><rect x="3" y="6" width="18" height="12" rx="2" /></svg>
+            <span class="text-lg font-medium">Panel + Letters</span>
+          </button>
+          <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M3 12h18M3 18h18" /></svg>
+            <span class="text-lg font-medium">Vinyl</span>
+          </button>
+          <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m-9-9h18" /></svg>
+            <span class="text-lg font-medium">Neon</span>
+          </button>
+          <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><rect x="5" y="5" width="14" height="14" rx="1.5" /></svg>
+            <span class="text-lg font-medium">Window Decal</span>
+          </button>
+          <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v20M4 6h16M4 12h16M4 18h16" /></svg>
+            <span class="text-lg font-medium">Wayfinding</span>
+          </button>
+          <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18v12H3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 9h12M6 15h12" /></svg>
+            <span class="text-lg font-medium">Point of Sale</span>
+          </button>
+          <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><rect x="4" y="8" width="16" height="8" rx="1.5" /></svg>
+            <span class="text-lg font-medium">Internal Wall Signs</span>
+          </button>
+        </div>
       </div>
 
       <!-- bottom nav for catalogue: only back arrow -->
@@ -102,82 +109,96 @@
     <!-- Letters Panel -->
     <section id="letters" class="panel translate-x-full">
       <div class="absolute inset-0">
-        <div id="lwrap" class="absolute inset-0 pt-6 flex w-[700vw] h-[calc(100%-3.5rem)] transition-transform duration-300 ease-out">
+        <div id="lwrap" class="absolute inset-0 flex transition-transform duration-300 ease-out">
 
           <!-- 1. Material -->
-          <section class="w-screen h-full px-8 pb-20 flex flex-col">
-            <h2 class="text-xl font-semibold uppercase tracking-wider text-center mb-4">Letter Material</h2>
-            <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-              <button class="tile sq px-4" data-choice="material" data-value="MDF">MDF</button>
-              <button class="tile sq px-4" data-choice="material" data-value="Acrylic">Acrylic</button>
-              <button class="tile sq px-4" data-choice="material" data-value="Metal">Metal</button>
-              <button class="tile sq px-4" data-choice="material" data-value="Foamex">Foamex</button>
+          <section class="slide">
+            <div class="heading"><span class="heading__pill">Letter Material</span></div>
+            <div class="slide-center">
+              <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+                <button class="tile sq px-4" data-choice="material" data-value="MDF">MDF</button>
+                <button class="tile sq px-4" data-choice="material" data-value="Acrylic">Acrylic</button>
+                <button class="tile sq px-4" data-choice="material" data-value="Metal">Metal</button>
+                <button class="tile sq px-4" data-choice="material" data-value="Foamex">Foamex</button>
+              </div>
             </div>
           </section>
 
           <!-- 2. Height -->
-          <section class="w-screen h-full px-8 pb-20 flex flex-col">
-            <h2 class="text-xl font-semibold uppercase tracking-wider text-center mb-4">Letter Height</h2>
-            <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-              <button class="tile sq px-4" data-choice="height" data-value="Small (10mm)">Small<br/>(10mm)</button>
-              <button class="tile sq px-4" data-choice="height" data-value="Medium (25mm)">Medium<br/>(25mm)</button>
-              <button class="tile sq px-4" data-choice="height" data-value="Large (50mm)">Large<br/>(50mm)</button>
-              <button class="tile sq px-4" data-choice="height" data-value="XL (75mm)">XL<br/>(75mm)</button>
-              <div class="col-span-2 grid grid-cols-2 gap-6">
-                <button class="tile sq px-4" data-choice="height" data-value="Custom">Custom</button>
-                <div class="tile sq">
-                  <input id="heightCustom" type="number" min="5" placeholder="mm" class="w-20 text-center border border-black/20 rounded-lg py-2">
+          <section class="slide">
+            <div class="heading"><span class="heading__pill">Letter Height</span></div>
+            <div class="slide-center">
+              <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+                <button class="tile sq px-4" data-choice="height" data-value="Small (10mm)">Small<br/>(10mm)</button>
+                <button class="tile sq px-4" data-choice="height" data-value="Medium (25mm)">Medium<br/>(25mm)</button>
+                <button class="tile sq px-4" data-choice="height" data-value="Large (50mm)">Large<br/>(50mm)</button>
+                <button class="tile sq px-4" data-choice="height" data-value="XL (75mm)">XL<br/>(75mm)</button>
+                <div class="col-span-2 grid grid-cols-2 gap-6">
+                  <button class="tile sq px-4" data-choice="height" data-value="Custom">Custom</button>
+                  <div class="tile sq">
+                    <input id="heightCustom" type="number" min="5" placeholder="mm" class="w-20 text-center border border-black/20 rounded-lg py-2">
+                  </div>
                 </div>
               </div>
             </div>
           </section>
 
           <!-- 3. Illumination Type -->
-          <section class="w-screen h-full px-8 pb-20 flex flex-col">
-            <h2 class="text-xl font-semibold uppercase tracking-wider text-center mb-4">Letter Illumination</h2>
-            <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-              <button class="tile sq px-4" data-choice="illumination" data-value="Face illuminated">Face</button>
-              <button class="tile sq px-4" data-choice="illumination" data-value="Edge illuminated">Edge</button>
-              <button class="tile sq px-4" data-choice="illumination" data-value="Halo illuminated">Halo</button>
-              <button class="tile sq px-4" data-choice="illumination" data-value="No Illumination">None</button>
+          <section class="slide">
+            <div class="heading"><span class="heading__pill">Letter Illumination</span></div>
+            <div class="slide-center">
+              <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+                <button class="tile sq px-4" data-choice="illumination" data-value="Face illuminated">Face</button>
+                <button class="tile sq px-4" data-choice="illumination" data-value="Edge illuminated">Edge</button>
+                <button class="tile sq px-4" data-choice="illumination" data-value="Halo illuminated">Halo</button>
+                <button class="tile sq px-4" data-choice="illumination" data-value="No Illumination">None</button>
+              </div>
             </div>
           </section>
 
           <!-- 4. Illumination Colour -->
-          <section class="w-screen h-full px-8 pb-20 flex flex-col">
-            <h2 class="text-xl font-semibold uppercase tracking-wider text-center mb-4">Illumination Colour</h2>
-            <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-              <button class="tile sq px-4" data-choice="illuminationColour" data-value="Bright white">Bright</button>
-              <button class="tile sq px-4" data-choice="illuminationColour" data-value="Warm white">Warm</button>
-              <button class="tile sq px-4" data-choice="illuminationColour" data-value="RGB">RGB</button>
+          <section class="slide">
+            <div class="heading"><span class="heading__pill">Illumination Colour</span></div>
+            <div class="slide-center">
+              <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+                <button class="tile sq px-4" data-choice="illuminationColour" data-value="Bright white">Bright</button>
+                <button class="tile sq px-4" data-choice="illuminationColour" data-value="Warm white">Warm</button>
+                <button class="tile sq px-4" data-choice="illuminationColour" data-value="RGB">RGB</button>
+              </div>
             </div>
           </section>
 
           <!-- 5. Fixing -->
-          <section class="w-screen h-full px-8 pb-20 flex flex-col">
-            <h2 class="text-xl font-semibold uppercase tracking-wider text-center mb-4">Fixing Method</h2>
-            <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-              <button class="tile sq px-4" data-choice="fixing" data-value="Direct to wall">Direct</button>
-              <button class="tile sq px-4" data-choice="fixing" data-value="Aluminium wall spacers">Spacers</button>
+          <section class="slide">
+            <div class="heading"><span class="heading__pill">Fixing Method</span></div>
+            <div class="slide-center">
+              <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+                <button class="tile sq px-4" data-choice="fixing" data-value="Direct to wall">Direct</button>
+                <button class="tile sq px-4" data-choice="fixing" data-value="Aluminium wall spacers">Spacers</button>
+              </div>
             </div>
           </section>
 
           <!-- 6. Installation -->
-          <section class="w-screen h-full px-8 pb-20 flex flex-col">
-            <h2 class="text-xl font-semibold uppercase tracking-wider text-center mb-4">Installation</h2>
-            <div id="installGrid" class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-              <button class="tile sq px-4" data-choice="install" data-value="Yes">Install</button>
-              <button class="tile sq px-4" data-choice="install" data-value="Delivery with installation layout (+£35)">Layout +£35</button>
-              <button class="tile sq px-4 col-span-2" data-choice="install" data-value="Delivery">Delivery</button>
+          <section class="slide">
+            <div class="heading"><span class="heading__pill">Installation</span></div>
+            <div class="slide-center">
+              <div id="installGrid" class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+                <button class="tile sq px-4" data-choice="install" data-value="Yes">Install</button>
+                <button class="tile sq px-4" data-choice="install" data-value="Delivery with installation layout (+£35)">Layout +£35</button>
+                <button class="tile sq px-4 col-span-2" data-choice="install" data-value="Delivery">Delivery</button>
+              </div>
             </div>
           </section>
 
           <!-- 7. Contact -->
-          <section class="w-screen h-full px-8 pb-20 flex flex-col">
-            <h2 class="text-xl font-semibold uppercase tracking-wider text-center mb-4">Contact</h2>
-            <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-              <div class="tile sq"><input id="email" type="email" placeholder="Email" class="w-[80%] text-center border border-black/20 rounded-lg py-2"></div>
-              <div class="tile sq"><input id="postcode" type="text" placeholder="Postcode" class="w-[70%] text-center border border-black/20 rounded-lg py-2"></div>
+          <section class="slide">
+            <div class="heading"><span class="heading__pill">Contact</span></div>
+            <div class="slide-center">
+              <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
+                <div class="tile sq"><input id="email" type="email" placeholder="Email" class="w-[80%] text-center border border-black/20 rounded-lg py-2"></div>
+                <div class="tile sq"><input id="postcode" type="text" placeholder="Postcode" class="w-[70%] text-center border border-black/20 rounded-lg py-2"></div>
+              </div>
             </div>
           </section>
 
@@ -214,7 +235,7 @@
 
   </div>
 
-  <!-- Our extracted JS -->
+  <!-- Our JS -->
   <script src="./app.js"></script>
 </body>
 </html>
