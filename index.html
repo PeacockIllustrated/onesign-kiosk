@@ -10,16 +10,17 @@
   <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
   <title>Onesign Kiosk — Mobile Prototype (Monochrome)</title>
 
-  <!-- Tailwind utilities (unchanged) -->
+  <!-- Tailwind utilities (keeps current utility classes) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Inter font (unchanged) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Our styles -->
+
+  <!-- App styles -->
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body class="overflow-hidden">
 
-  <!-- Top Toolbar -->
+  <!-- Top Toolbar (safe-area aware) -->
   <header id="topbar" class="topbar">
     <div class="topbar__inner">
       <img src="./OneSignSVG.svg" alt="Onesign" class="h-6 w-auto select-none" draggable="false" />
@@ -56,7 +57,7 @@
         <div class="heading"><span class="heading__pill">Select a Product Type</span></div>
       </header>
 
-      <!-- centred grid -->
+      <!-- Centre the grid in the usable canvas -->
       <div class="slide-center">
         <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
           <button id="lettersCard" class="tile sq flex flex-col items-center justify-center gap-3 transition-all" aria-label="Letters">
@@ -96,7 +97,7 @@
         </div>
       </div>
 
-      <!-- bottom nav for catalogue: only back arrow -->
+      <!-- Catalogue back -->
       <div class="absolute left-0 right-0 flex items-center justify-center gap-10"
            style="bottom: max(1rem, env(safe-area-inset-bottom));">
         <button id="backFromCatalogue" aria-label="Back" class="border-2 border-black rounded-full w-14 h-14 flex items-center justify-center hover:bg-black hover:text-white transition active:scale-95">
@@ -206,7 +207,7 @@
         <!-- Progress dots (tappable) -->
         <div id="dots" class="absolute left-0 right-0 flex justify-center gap-2" style="bottom: 5.5rem;" role="tablist" aria-label="Progress"></div>
 
-        <!-- bottom nav arrows -->
+        <!-- Bottom nav arrows -->
         <div class="absolute left-0 right-0 flex items-center justify-center gap-10"
              style="bottom: max(1rem, env(safe-area-inset-bottom));">
           <button id="lettersBack" aria-label="Previous" class="navbtn">
@@ -234,7 +235,7 @@
 
   </div>
 
-  <!-- Our JS -->
+  <!-- App logic -->
   <script src="./app.js"></script>
 </body>
 </html>
