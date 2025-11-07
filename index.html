@@ -12,26 +12,58 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', sans-serif; background:#fafafa; color:#111; }
+    body { font-family: 'Inter', sans-serif; background:#f4f4f4; color:#111; }
     .panel { position:absolute; inset:0; transition:transform .3s ease-out; will-change:transform; }
-    .tile-active { background:#111 !important; color:#fff !important; }
+    .tile-active { background:#111!important; color:#fff!important; }
+
+    /* Unified tile styling for sharper, tactile cards */
+    .tile {
+      border:2px solid #111; border-radius:1rem; background:#fff;
+      box-shadow:0 0 0 rgba(0,0,0,0);
+      transition:transform .15s ease, box-shadow .2s ease;
+      display:flex; align-items:center; justify-content:center; text-align:center; padding:.5rem;
+    }
+    .tile:hover { box-shadow:0 8px 24px rgba(0,0,0,.12); }
+    .tile:active { transform:scale(.97); }
+    .tile:focus { outline:2px solid rgba(0,0,0,.5); outline-offset:2px; }
+
+    /* Perfect square helper */
+    .sq { aspect-ratio: 1 / 1; }
+
+    /* Motion-safe fallback */
+    @media (prefers-reduced-motion: reduce) {
+      .panel { transition: none !important; }
+      #lwrap { transition: none !important; }
+      .tile, button { transition: none !important; }
+    }
+
+    :root { --touch: 48px; }
+    button { min-height: var(--touch); min-width: var(--touch); }
+    h1,h2 { letter-spacing:.02em; }
+
     html, body { height: 100%; }
   </style>
 </head>
 <body class="overflow-hidden" onload="(function(){ if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); } })()">
+
+  <!-- Tiny brand chip (uses existing SVG icon) -->
+  <div class="pointer-events-none absolute top-3 left-3 z-20 opacity-80">
+    <img src="./assets/icons/icon.svg" alt="Onesign" class="h-6 w-auto">
+  </div>
+
   <div id="viewport" class="relative w-screen h-screen overflow-hidden">
 
     <!-- Gate Panel -->
-    <section id="gate" class="panel translate-x-0 flex flex-col items-center justify-center gap-8 p-8 bg-[#fafafa]">
-      <h1 class="text-2xl font-semibold tracking-wider uppercase">Welcome to Onesign</h1>
+    <section id="gate" class="panel translate-x-0 flex flex-col items-center justify-center gap-8 p-8">
+      <h1 class="text-2xl font-semibold uppercase">Welcome to Onesign</h1>
       <div class="flex flex-col gap-6 w-full max-w-md">
-        <button id="externalBtn" class="border-2 border-black rounded-2xl bg-white py-10 flex flex-col items-center justify-center transition-all duration-200 hover:shadow-xl active:scale-95">
+        <button id="externalBtn" class="tile py-10 flex flex-col items-center justify-center transition-all duration-200">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mb-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M4.5 10.5v9.75A1.5 1.5 0 006 21.75h12a1.5 1.5 0 001.5-1.5v-9.75" />
           </svg>
           <span class="text-xl font-medium">External Signs</span>
         </button>
-        <button id="internalBtn" class="border-2 border-black rounded-2xl bg-white py-10 flex flex-col items-center justify-center transition-all duration-200 hover:shadow-xl active:scale-95">
+        <button id="internalBtn" class="tile py-10 flex flex-col items-center justify-center transition-all duration-200">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mb-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h18M3 9h18m-9 4.5h9m-9 4.5h9" />
           </svg>
@@ -42,55 +74,57 @@
     </section>
 
     <!-- Catalogue Panel -->
-    <section id="catalogue" class="panel translate-x-full flex flex-col p-8 bg-[#fafafa]">
+    <section id="catalogue" class="panel translate-x-full flex flex-col p-8">
       <header class="mb-6 text-center">
         <h2 class="text-xl font-semibold uppercase tracking-wider">Select a Product Type</h2>
       </header>
       <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-        <button id="lettersCard" class="border-2 border-black rounded-2xl bg-white aspect-square flex flex-col items-center justify-center gap-3 hover:shadow-xl transition-all">
+        <button id="lettersCard" class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l7.5-15 7.5 15M6 16.5h12" />
           </svg>
           <span class="text-lg font-medium">Letters</span>
         </button>
-        <button class="border-2 border-black rounded-2xl bg-white aspect-square flex flex-col items-center justify-center gap-3 hover:shadow-xl transition-all">
+        <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><rect x="3" y="6" width="18" height="12" rx="2" /></svg>
           <span class="text-lg font-medium">Panel + Letters</span>
         </button>
-        <button class="border-2 border-black rounded-2xl bg-white aspect-square flex flex-col items-center justify-center gap-3 hover:shadow-xl transition-all">
+        <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M3 12h18M3 18h18" /></svg>
           <span class="text-lg font-medium">Vinyl</span>
         </button>
-        <button class="border-2 border-black rounded-2xl bg-white aspect-square flex flex-col items-center justify-center gap-3 hover:shadow-xl transition-all">
+        <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m-9-9h18" /></svg>
           <span class="text-lg font-medium">Neon</span>
         </button>
-        <button class="border-2 border-black rounded-2xl bg-white aspect-square flex flex-col items-center justify-center gap-3 hover:shadow-xl transition-all">
+        <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><rect x="5" y="5" width="14" height="14" rx="1.5" /></svg>
           <span class="text-lg font-medium">Window Decal</span>
         </button>
-        <button class="border-2 border-black rounded-2xl bg-white aspect-square flex flex-col items-center justify-center gap-3 hover:shadow-xl transition-all">
+        <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v20M4 6h16M4 12h16M4 18h16" /></svg>
           <span class="text-lg font-medium">Wayfinding</span>
         </button>
-        <button class="border-2 border-black rounded-2xl bg-white aspect-square flex flex-col items-center justify-center gap-3 hover:shadow-xl transition-all">
+        <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18v12H3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 9h12M6 15h12" /></svg>
           <span class="text-lg font-medium">Point of Sale</span>
         </button>
-        <button class="border-2 border-black rounded-2xl bg-white aspect-square flex flex-col items-center justify-center gap-3 hover:shadow-xl transition-all">
+        <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><rect x="4" y="8" width="16" height="8" rx="1.5" /></svg>
           <span class="text-lg font-medium">Internal Wall Signs</span>
         </button>
       </div>
-      <div class="absolute bottom-6 left-0 right-0 flex items-center justify-center gap-10">
-        <button id="backFromCatalogue" aria-label="Back" class="border-2 border-black rounded-full w-12 h-12 flex items-center justify-center hover:bg-black hover:text-white transition">
+      <!-- bottom nav for catalogue: only back arrow -->
+      <div class="absolute left-0 right-0 flex items-center justify-center gap-10"
+           style="bottom: max(1rem, env(safe-area-inset-bottom));">
+        <button id="backFromCatalogue" aria-label="Back" class="border-2 border-black rounded-full w-14 h-14 flex items-center justify-center hover:bg-black hover:text-white transition active:scale-95">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
         </button>
       </div>
     </section>
 
     <!-- Letters Panel -->
-    <section id="letters" class="panel translate-x-full bg-[#fafafa]">
+    <section id="letters" class="panel translate-x-full">
       <div class="absolute inset-0">
         <div id="lwrap" class="absolute inset-0 pt-6 flex w-[700vw] h-[calc(100%-3.5rem)] transition-transform duration-300 ease-out">
 
@@ -98,10 +132,10 @@
           <section class="w-screen h-full px-8 pb-20 flex flex-col">
             <h2 class="text-xl font-semibold uppercase tracking-wider text-center mb-4">Letter Material</h2>
             <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="material" data-value="MDF">MDF</button>
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="material" data-value="Acrylic">Acrylic</button>
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="material" data-value="Metal">Metal</button>
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="material" data-value="Foamex">Foamex</button>
+              <button class="tile sq px-4" data-choice="material" data-value="MDF">MDF</button>
+              <button class="tile sq px-4" data-choice="material" data-value="Acrylic">Acrylic</button>
+              <button class="tile sq px-4" data-choice="material" data-value="Metal">Metal</button>
+              <button class="tile sq px-4" data-choice="material" data-value="Foamex">Foamex</button>
             </div>
           </section>
 
@@ -109,13 +143,13 @@
           <section class="w-screen h-full px-8 pb-20 flex flex-col">
             <h2 class="text-xl font-semibold uppercase tracking-wider text-center mb-4">Letter Height</h2>
             <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="height" data-value="Small (10mm)">Small<br/>(10mm)</button>
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="height" data-value="Medium (25mm)">Medium<br/>(25mm)</button>
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="height" data-value="Large (50mm)">Large<br/>(50mm)</button>
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="height" data-value="XL (75mm)">XL<br/>(75mm)</button>
+              <button class="tile sq px-4" data-choice="height" data-value="Small (10mm)">Small<br/>(10mm)</button>
+              <button class="tile sq px-4" data-choice="height" data-value="Medium (25mm)">Medium<br/>(25mm)</button>
+              <button class="tile sq px-4" data-choice="height" data-value="Large (50mm)">Large<br/>(50mm)</button>
+              <button class="tile sq px-4" data-choice="height" data-value="XL (75mm)">XL<br/>(75mm)</button>
               <div class="col-span-2 grid grid-cols-2 gap-6">
-                <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="height" data-value="Custom">Custom</button>
-                <div class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center">
+                <button class="tile sq px-4" data-choice="height" data-value="Custom">Custom</button>
+                <div class="tile sq">
                   <input id="heightCustom" type="number" min="5" placeholder="mm" class="w-20 text-center border border-black/20 rounded-lg py-2">
                 </div>
               </div>
@@ -126,10 +160,10 @@
           <section class="w-screen h-full px-8 pb-20 flex flex-col">
             <h2 class="text-xl font-semibold uppercase tracking-wider text-center mb-4">Letter Illumination</h2>
             <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="illumination" data-value="Face illuminated">Face</button>
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="illumination" data-value="Edge illuminated">Edge</button>
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="illumination" data-value="Halo illuminated">Halo</button>
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="illumination" data-value="No Illumination">None</button>
+              <button class="tile sq px-4" data-choice="illumination" data-value="Face illuminated">Face</button>
+              <button class="tile sq px-4" data-choice="illumination" data-value="Edge illuminated">Edge</button>
+              <button class="tile sq px-4" data-choice="illumination" data-value="Halo illuminated">Halo</button>
+              <button class="tile sq px-4" data-choice="illumination" data-value="No Illumination">None</button>
             </div>
           </section>
 
@@ -137,9 +171,9 @@
           <section class="w-screen h-full px-8 pb-20 flex flex-col">
             <h2 class="text-xl font-semibold uppercase tracking-wider text-center mb-4">Illumination Colour</h2>
             <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="illuminationColour" data-value="Bright white">Bright</button>
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="illuminationColour" data-value="Warm white">Warm</button>
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="illuminationColour" data-value="RGB">RGB</button>
+              <button class="tile sq px-4" data-choice="illuminationColour" data-value="Bright white">Bright</button>
+              <button class="tile sq px-4" data-choice="illuminationColour" data-value="Warm white">Warm</button>
+              <button class="tile sq px-4" data-choice="illuminationColour" data-value="RGB">RGB</button>
             </div>
           </section>
 
@@ -147,8 +181,8 @@
           <section class="w-screen h-full px-8 pb-20 flex flex-col">
             <h2 class="text-xl font-semibold uppercase tracking-wider text-center mb-4">Fixing Method</h2>
             <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="fixing" data-value="Direct to wall">Direct</button>
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="fixing" data-value="Aluminium wall spacers">Spacers</button>
+              <button class="tile sq px-4" data-choice="fixing" data-value="Direct to wall">Direct</button>
+              <button class="tile sq px-4" data-choice="fixing" data-value="Aluminium wall spacers">Spacers</button>
             </div>
           </section>
 
@@ -156,9 +190,9 @@
           <section class="w-screen h-full px-8 pb-20 flex flex-col">
             <h2 class="text-xl font-semibold uppercase tracking-wider text-center mb-4">Installation</h2>
             <div id="installGrid" class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="install" data-value="Yes">Install</button>
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4" data-choice="install" data-value="Delivery with installation layout (+£35)">Layout +£35</button>
-              <button class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center text-center hover:shadow-xl transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-black/50 px-4 col-span-2" data-choice="install" data-value="Delivery">Delivery</button>
+              <button class="tile sq px-4" data-choice="install" data-value="Yes">Install</button>
+              <button class="tile sq px-4" data-choice="install" data-value="Delivery with installation layout (+£35)">Layout +£35</button>
+              <button class="tile sq px-4 col-span-2" data-choice="install" data-value="Delivery">Delivery</button>
             </div>
           </section>
 
@@ -166,19 +200,23 @@
           <section class="w-screen h-full px-8 pb-20 flex flex-col">
             <h2 class="text-xl font-semibold uppercase tracking-wider text-center mb-4">Contact</h2>
             <div class="grid grid-cols-2 gap-6 max-w-md mx-auto w-full">
-              <div class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center"><input id="email" type="email" placeholder="Email" class="w-[80%] text-center border border-black/20 rounded-lg py-2"></div>
-              <div class="border-2 border-black rounded-2xl bg-white aspect-square flex items-center justify-center"><input id="postcode" type="text" placeholder="Postcode" class="w-[70%] text-center border border-black/20 rounded-lg py-2"></div>
+              <div class="tile sq"><input id="email" type="email" placeholder="Email" class="w-[80%] text-center border border-black/20 rounded-lg py-2"></div>
+              <div class="tile sq"><input id="postcode" type="text" placeholder="Postcode" class="w-[70%] text-center border border-black/20 rounded-lg py-2"></div>
             </div>
           </section>
 
         </div>
 
+        <!-- Progress dots -->
+        <div id="dots" class="absolute left-0 right-0 flex justify-center gap-2" style="bottom: 5.5rem;"></div>
+
         <!-- bottom nav arrows -->
-        <div class="absolute bottom-6 left-0 right-0 flex items-center justify-center gap-10">
-          <button id="lettersBack" aria-label="Previous" class="border-2 border-black rounded-full w-12 h-12 flex items-center justify-center hover:bg-black hover:text-white transition">
+        <div class="absolute left-0 right-0 flex items-center justify-center gap-10"
+             style="bottom: max(1rem, env(safe-area-inset-bottom));">
+          <button id="lettersBack" aria-label="Previous" class="border-2 border-black rounded-full w-14 h-14 flex items-center justify-center hover:bg-black hover:text-white transition active:scale-95">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
           </button>
-          <button id="lettersNext" aria-label="Next" class="border-2 border-black rounded-full w-12 h-12 flex items-center justify-center hover:bg-black hover:text-white transition">
+          <button id="lettersNext" aria-label="Next" class="border-2 border-black rounded-full w-14 h-14 flex items-center justify-center hover:bg-black hover:text-white transition active:scale-95">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
           </button>
         </div>
@@ -225,16 +263,24 @@
     const lwrap = document.getElementById('lwrap');
     const lettersBack = document.getElementById('lettersBack');
     const lettersNext = document.getElementById('lettersNext');
+    const dots = document.getElementById('dots');
 
     let step = 0; // 0..6
     const TOTAL = 7;
 
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+    function renderDots() {
+      if(!dots) return;
+      dots.innerHTML = Array.from({length: TOTAL}, (_,i)=>
+        `<span class="inline-block rounded-full ${i===step?'bg-black':'bg-black/20'}" style="width:8px;height:8px;"></span>`
+      ).join('');
+    }
     function go(n){
       step = clamp(n, 0, TOTAL-1);
       lwrap.style.transform = `translateX(-${step*100}vw)`;
       enforceInstallRules();
       updateSummary();
+      renderDots();
     }
 
     function setActive(group, value){
