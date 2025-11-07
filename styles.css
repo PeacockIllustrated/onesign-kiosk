@@ -3,14 +3,24 @@
   --topbar-h: 56px;
   --topbar: calc(var(--topbar-h) + env(safe-area-inset-top));
   --bottomnav: calc(96px + env(safe-area-inset-bottom)); /* dots + arrows */
+  --gutter-x: 2rem;           /* horizontal padding for slides */
+  --gutter-bottom: var(--bottomnav);
   --touch: 48px;
+  --rhythm: 12px;             /* spacing unit */
 }
 
-html, body { height: 100%; }
+html, body { 
+  height: 100%; 
+  overflow: hidden; /* prevent global scroll */
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background: #f4f4f4;
   color: #111;
+  text-transform: none; /* content will be lowercase by copy */
+  font-weight: 600;     /* semi-bold default */
+  font-size: clamp(15px, 3.6vw, 16px);
 }
 
 /* Toolbar */
@@ -46,6 +56,7 @@ body {
   transition: transform .3s ease-out;
   will-change: transform;
   padding-top: var(--topbar); /* sit below toolbar */
+  overflow: hidden; /* prevent panel-level scrolling */
 }
 
 /* Tiles */
@@ -68,19 +79,79 @@ body {
 .sq { aspect-ratio: 1 / 1; }
 
 /* Headings */
-.heading{ display:flex; justify-content:center; margin-bottom:.25rem; }
+.heading{ 
+  display:flex; 
+  justify-content:center; 
+  margin-bottom: calc(var(--rhythm) * 0.75); 
+}
 .heading__pill{
   display:inline-block;
   background:#111; color:#fff;
-  padding:.55rem 1.1rem;
+  padding:.6rem 1.2rem;
   border-radius:9999px;
-  font-weight:800; letter-spacing:.10em; text-transform:uppercase;
+  font-weight:800; 
+  letter-spacing:.06em; /* tighter but readable */
+  text-transform:none;  /* allow lowercase labels */
   box-shadow: 0 2px 0 #000;
+  font-size: clamp(18px, 2.8vw, 22px);
+  line-height: 1;
+}
+
+/* Gate title (welcome) */
+#gate h1 {
+  font-weight: 800;
+  text-transform: none;
+  font-size: clamp(22px, 4.5vw, 28px);
+  letter-spacing: .01em;
 }
 
 /* Centred slide content */
-.slide { width:100vw; height:100%; padding: 0 2rem var(--bottomnav) 2rem; display:flex; flex-direction:column; }
-.slide-center{ flex:1; display:flex; align-items:center; justify-content:center; }
+.slide { 
+  width:100vw; 
+  height:100%; 
+  padding: 0 var(--gutter-x) var(--gutter-bottom) var(--gutter-x); 
+  display:flex; 
+  flex-direction:column; 
+  overflow: hidden; /* prevent background/page scroll */
+}
+.slide-center{ 
+  flex:1; 
+  display:flex; 
+  align-items:center; 
+  justify-content:center; /* grid centred vertically and horizontally */
+  overflow: hidden;
+}
+
+/* Scrollable wrapper for grids/inputs when content exceeds viewport */
+.slide-scroll { 
+  max-height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  width: 100%;
+}
+
+/* Subtle scrollbar that matches monochrome */
+.slide-scroll::-webkit-scrollbar { 
+  width: 6px; 
+}
+.slide-scroll::-webkit-scrollbar-thumb { 
+  background: rgba(0,0,0,.35); 
+  border-radius: 999px; 
+}
+.slide-scroll::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+
+/* Grid spacing */
+.grid { 
+  gap: calc(var(--rhythm) * 1.25); 
+}
+
+/* Progress dots spacing */
+#dots { 
+  margin-top: calc(var(--rhythm) * 0.5); 
+}
 
 /* Letters track (full height; each .slide handles bottom padding) */
 #lwrap{ height: 100%; }
@@ -105,6 +176,10 @@ body {
 }
 
 /* Touch targets & typography */
+button, input { 
+  font-weight: 600;
+  text-transform: none;
+}
 button { 
   min-height: var(--touch); 
   min-width: var(--touch); 
@@ -117,7 +192,10 @@ button:focus {
 button[disabled] { 
   cursor: not-allowed; 
 }
-h1, h2 { letter-spacing: .02em; }
+h1, h2 { 
+  letter-spacing: .02em; 
+  font-weight: 800;
+}
 
 /* Progress dots accessibility */
 #dots button[role="tab"] {
