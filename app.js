@@ -39,7 +39,13 @@ const letters = document.getElementById('letters');
 const internalBtn = document.getElementById('internalBtn');
 const externalBtn = document.getElementById('externalBtn');
 const backFromCatalogue = document.getElementById('backFromCatalogue');
-const lettersCard = document.getElementById('lettersCard');
+const productPlaceholder = document.getElementById('productPlaceholder');
+const productPlaceholderHeading = document.getElementById('productPlaceholderHeading');
+const productPlaceholderEyebrow = document.getElementById('productPlaceholderEyebrow');
+const productPlaceholderTitle = document.getElementById('productPlaceholderTitle');
+const productPlaceholderLead = document.getElementById('productPlaceholderLead');
+const productPlaceholderNote = document.getElementById('productPlaceholderNote');
+const backFromPlaceholder = document.getElementById('backFromPlaceholder');
 
 function show(el){ el.classList.remove('translate-x-full','-translate-x-full'); el.classList.add('translate-x-0'); }
 function hideLeft(el){ el.classList.remove('translate-x-0','translate-x-full'); el.classList.add('-translate-x-full'); }
@@ -48,7 +54,104 @@ function hideRight(el){ el.classList.remove('translate-x-0','-translate-x-full')
 internalBtn.addEventListener('click', ()=>{ hideLeft(gate); show(catalogue); vibrate(); });
 externalBtn.addEventListener('click', ()=>{ hideLeft(gate); show(catalogue); vibrate(); });
 backFromCatalogue.addEventListener('click', ()=>{ hideRight(catalogue); show(gate); vibrate(); });
-lettersCard.addEventListener('click', ()=>{ hideLeft(catalogue); show(letters); go(0); vibrate(); });
+
+const PRODUCT_REGISTRY = {
+  letters: {
+    type: 'flow',
+    name: 'letters',
+    eyebrow: 'configure',
+    title: 'Letters configuration',
+    lead: 'Walk through material, sizing, illumination and more — progress saves automatically.',
+    note: 'Use the arrows or swipe to move between steps. Back takes you to the catalogue.',
+    panel: letters,
+    onEnter: ()=>{ go(0); }
+  },
+  'panel-letters': {
+    type: 'placeholder',
+    name: 'panel + letters',
+    eyebrow: 'coming soon',
+    title: 'Panel + letters',
+    lead: 'We are mapping the combined panel and letter build so you can spec everything in one go.',
+    note: 'Tap back to return to the catalogue, or speak with the Onesign team for early access.'
+  },
+  vinyl: {
+    type: 'placeholder',
+    name: 'vinyl',
+    eyebrow: 'in roadmap',
+    title: 'Vinyl signage',
+    lead: 'Self-install vinyl, frosted and privacy films will be added shortly.',
+    note: 'Back will return you to the product list. Need something sooner? Chat with the team.'
+  },
+  neon: {
+    type: 'placeholder',
+    name: 'neon',
+    eyebrow: 'coming soon',
+    title: 'Neon lighting',
+    lead: 'LED neon flex and traditional glass neon require a few extra steps — we’re building that now.',
+    note: 'Use the back arrow to continue exploring ready-to-go products.'
+  },
+  'window-decal': {
+    type: 'placeholder',
+    name: 'window decal',
+    eyebrow: 'coming soon',
+    title: 'Window decals',
+    lead: 'Choose from static-cling, etch and long-term vinyl soon.',
+    note: 'Back returns you to the catalogue so you can browse what’s live today.'
+  },
+  wayfinding: {
+    type: 'placeholder',
+    name: 'way-finding',
+    eyebrow: 'in discovery',
+    title: 'Wayfinding suite',
+    lead: 'Directional systems and modular kits are being designed for the kiosk.',
+    note: 'Tap back to continue with another product or speak with us for custom quotes.'
+  }
+};
+
+const productButtons = document.querySelectorAll('#catalogue [data-product]');
+productButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const productId = btn.dataset.product;
+    handleProductSelection(productId);
+    vibrate();
+  });
+});
+
+if(backFromPlaceholder && productPlaceholder){
+  backFromPlaceholder.addEventListener('click', ()=>{
+    hideRight(productPlaceholder);
+    show(catalogue);
+    vibrate();
+  });
+}
+
+function handleProductSelection(productId){
+  const entry = PRODUCT_REGISTRY[productId];
+  if(!entry) return;
+  if(entry.type === 'flow' && entry.panel){
+    hideLeft(catalogue);
+    show(entry.panel);
+    if(typeof entry.onEnter === 'function'){ entry.onEnter(); }
+    return;
+  }
+  openProductPlaceholder(entry);
+}
+
+function openProductPlaceholder(entry){
+  if(!productPlaceholder || !productPlaceholderEyebrow || !productPlaceholderHeading) return;
+  const eyebrow = entry.eyebrow || 'coming soon';
+  const heading = entry.name || 'Product';
+  const title = entry.title || 'Configuration in progress';
+  const lead = entry.lead || 'We are preparing this product journey.';
+  const note = entry.note || 'Tap back to return to the catalogue, or speak with the Onesign team for early access.';
+  productPlaceholderEyebrow.textContent = eyebrow;
+  productPlaceholderHeading.textContent = heading;
+  if(productPlaceholderTitle) productPlaceholderTitle.textContent = title;
+  if(productPlaceholderLead) productPlaceholderLead.textContent = lead;
+  if(productPlaceholderNote) productPlaceholderNote.textContent = note;
+  hideLeft(catalogue);
+  show(productPlaceholder);
+}
 
 // --------- LETTERS FLOW ---------
 const L = {
