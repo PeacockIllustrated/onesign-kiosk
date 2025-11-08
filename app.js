@@ -53,7 +53,7 @@ lettersCard.addEventListener('click', ()=>{ hideLeft(catalogue); show(letters); 
 // --------- LETTERS FLOW ---------
 const L = {
   material:null, height:null, heightCustom:null,
-  illumination:null, illuminationColour:null,
+  illumination:null, illuminationColour:null, illuminationColourHex:null,
   fixing:null, install:null,
   email:'', postcode:''
 };
@@ -62,9 +62,31 @@ const lwrap = document.getElementById('lwrap');
 const lettersBack = document.getElementById('lettersBack');
 const lettersNext = document.getElementById('lettersNext');
 const dots = document.getElementById('dots');
+const rgbPicker = document.getElementById('rgbPicker');
+const rgbValueLabel = document.getElementById('rgbValue');
+const rgbPreview = document.querySelector('.rgb-preview');
+const customSizeHint = document.querySelector('[data-choice="height"][data-value="Custom"] .tile-sub');
 
 let step = 0;             // 0..6
 const TOTAL = 7;
+
+function syncRgbTile(hex){
+  const hasHex = Boolean(hex);
+  if(rgbValueLabel){
+    rgbValueLabel.textContent = hasHex ? hex.toUpperCase() : 'choose colour';
+  }
+  if(rgbPreview){
+    if(hasHex){
+      rgbPreview.style.background = hex;
+      rgbPreview.style.borderColor = '#fff';
+      rgbPreview.style.boxShadow = '0 0 0 2px rgba(0,0,0,0.4)';
+    } else {
+      rgbPreview.style.background = 'conic-gradient(from 0deg, #ff0000, #00ff00, #0000ff, #ff0000)';
+      rgbPreview.style.borderColor = '#111';
+      rgbPreview.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    }
+  }
+}
 
 // Render progress dots with validation: cannot jump forward past incomplete current slide
 function renderDots() {
@@ -132,43 +154,84 @@ function updateNextEnabled(){
 // selection + auto-advance
 document.querySelectorAll('[data-choice]').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    const g = btn.dataset.choice; const v = btn.dataset.value;
+    const g = btn.dataset.choice;
+    const v = btn.dataset.value;
+    let shouldAutoAdvance = true;
 
-    if(g==='material') L.material=v;
-    if(g==='height') {
-      L.height=v;
-      if(v!=='Custom'){
-        L.heightCustom=null;
-        const hc=document.getElementById('heightCustom'); if(hc) hc.value='';
+    if(g === 'material'){
+      L.material = v;
+    } else if(g === 'height'){
+      L.height = v;
+      shouldAutoAdvance = v !== 'Custom';
+      if(v !== 'Custom'){
+        L.heightCustom = null;
+        const hc = document.getElementById('heightCustom');
+        if(hc) hc.value = '';
+        if(customSizeHint){
+          customSizeHint.textContent = 'tap to enter';
+        }
       } else {
-        // Focus the custom input when Custom is selected
-        const hc=document.getElementById('heightCustom'); 
-        if(hc) { 
-          setTimeout(()=>hc.focus(), 100); // slight delay for smooth UX
+        const hc = document.getElementById('heightCustom');
+        if(hc){
+          setTimeout(()=>hc.focus(), 100);
         }
       }
+    } else if(g === 'illumination'){
+      L.illumination = v;
+      if(v === 'No Illumination'){
+        L.illuminationColour = null;
+        L.illuminationColourHex = null;
+        syncRgbTile(null);
+        setActive('illuminationColour', '');
+      }
+    } else if(g === 'illuminationColour'){
+      if(v === 'RGB' && rgbPicker){
+        rgbPicker.click();
+        vibrate();
+        return;
+      }
+      L.illuminationColour = v;
+      L.illuminationColourHex = null;
+      syncRgbTile(null);
+    } else if(g === 'fixing'){
+      L.fixing = v;
+    } else if(g === 'install'){
+      L.install = v;
     }
-    if(g==='illumination'){
-      L.illumination=v;
-      if(v==='No Illumination'){ L.illuminationColour=null; }
-    }
-    if(g==='illuminationColour') L.illuminationColour=v;
-    if(g==='fixing') L.fixing=v;
-    if(g==='install') L.install=v;
 
-    setActive(g,v);
+    setActive(g, v);
     enforceInstallRules();
     updateSummary();
     updateNextEnabled();
     vibrate();
 
-    // Auto-advance (except when height=Custom which needs input)
     const next = computeNextStep(step);
-    if(!(g==='height' && v==='Custom')){
+    if(!(g === 'height' && v === 'Custom') && shouldAutoAdvance){
       go(next);
     }
   });
 });
+
+if(rgbPicker){
+  rgbPicker.addEventListener('input', e=>{
+    const hex = (e.target.value || '').trim();
+    syncRgbTile(hex || null);
+  });
+
+  rgbPicker.addEventListener('change', e=>{
+    const hex = (e.target.value || '').trim();
+    if(!hex) return;
+    L.illuminationColour = 'RGB';
+    L.illuminationColourHex = hex;
+    setActive('illuminationColour', 'RGB');
+    updateSummary();
+    updateNextEnabled();
+    vibrate();
+    syncRgbTile(hex);
+    const next = computeNextStep(step);
+    go(next);
+  });
+}
 
 // Custom height input: requires numeric value > 0 before enabling Next
 const heightCustomInput = document.getElementById('heightCustom');
@@ -179,11 +242,17 @@ if(heightCustomInput){
       L.height = 'Custom';
       L.heightCustom = mm;
       setActive('height', 'Custom');
+      if(customSizeHint){
+        customSizeHint.textContent = `${mm}mm`;
+      }
       updateSummary();
       updateNextEnabled();
       vibrate(8); // subtle feedback on valid input
     } else {
       L.heightCustom = null;
+      if(customSizeHint){
+        customSizeHint.textContent = 'tap to enter';
+      }
       updateNextEnabled();
     }
   });
@@ -305,11 +374,17 @@ const summaryBox=document.getElementById('summary');
 
 function updateSummary(){
   const h=L.height==='Custom'&&L.heightCustom?`Custom (${L.heightCustom}mm)`: (L.height||'—');
+  const showColour = !!(L.illumination && L.illumination!=='No Illumination' && L.material!=='Foamex');
+  const colourValue = showColour
+    ? (L.illuminationColour === 'RGB'
+        ? (L.illuminationColourHex ? `RGB (${L.illuminationColourHex.toUpperCase()})` : 'RGB')
+        : (L.illuminationColour || '—'))
+    : '—';
   const rows=[
     ['Material', L.material||'—'],
     ['Height', h],
     ['Illumination', L.material==='Foamex' ? '—' : (L.illumination||'—')],
-    ['Colour', (L.illumination && L.illumination!=='No Illumination' && L.material!=='Foamex') ? (L.illuminationColour||'—') : '—'],
+    ['Colour', colourValue],
     ['Fixing', L.fixing||'—'],
     ['Install', L.install||'—'],
     ['Email', L.email||'—'],
@@ -343,6 +418,7 @@ if(pcInput){ pcInput.addEventListener('input', e=>{ L.postcode=e.target.value; u
 go(0);
 updateNextEnabled();
 renderDots();
+syncRgbTile(L.illuminationColour === 'RGB' ? L.illuminationColourHex : null);
 
 // --------- BASIC TESTS (console) ---------
 (function runTests(){
@@ -357,3 +433,4 @@ renderDots();
   L.material=savedMat;
   console.groupEnd();
 })();
+

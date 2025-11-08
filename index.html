@@ -134,16 +134,30 @@
             <div class="heading"><span class="heading__pill">letter height</span></div>
             <div class="slide-center">
               <div class="slide-scroll">
-                <div class="grid grid-cols-2 max-w-md mx-auto w-full">
-                <button class="tile sq px-4" data-choice="height" data-value="Small (10mm)">small<br/>(10mm)</button>
-                <button class="tile sq px-4" data-choice="height" data-value="Medium (25mm)">medium<br/>(25mm)</button>
-                <button class="tile sq px-4" data-choice="height" data-value="Large (50mm)">large<br/>(50mm)</button>
-                <button class="tile sq px-4" data-choice="height" data-value="XL (75mm)">xl<br/>(75mm)</button>
-                <div class="col-span-2 grid grid-cols-2">
-                  <button class="tile sq px-4" data-choice="height" data-value="Custom">custom</button>
-                  <div class="tile sq">
-                    <input id="heightCustom" type="number" min="5" placeholder="mm" class="w-20 text-center border border-black/20 rounded-lg py-2">
-                  </div>
+                <div class="connected-grid max-w-md mx-auto w-full" data-grid="height">
+                <button class="tile sq px-4 tile-stacked" data-choice="height" data-value="Small (10mm)">
+                  <span>small</span>
+                  <span class="tile-sub">10mm</span>
+                </button>
+                <button class="tile sq px-4 tile-stacked" data-choice="height" data-value="Medium (25mm)">
+                  <span>medium</span>
+                  <span class="tile-sub">25mm</span>
+                </button>
+                <button class="tile sq px-4 tile-stacked" data-choice="height" data-value="Large (50mm)">
+                  <span>large</span>
+                  <span class="tile-sub">50mm</span>
+                </button>
+                <button class="tile sq px-4 tile-stacked" data-choice="height" data-value="XL (75mm)">
+                  <span>xl</span>
+                  <span class="tile-sub">75mm</span>
+                </button>
+                <button class="tile sq px-4 tile-stacked" data-choice="height" data-value="Custom">
+                  <span>custom size</span>
+                  <span class="tile-sub">tap to enter</span>
+                </button>
+                <div class="tile sq tile-input tile-stacked" data-custom-input>
+                  <span class="tile-sub">value (mm)</span>
+                  <input id="heightCustom" type="number" min="5" placeholder="000" inputmode="numeric">
                 </div>
               </div>
               </div>
@@ -170,11 +184,17 @@
             <div class="heading"><span class="heading__pill">illumination colour</span></div>
             <div class="slide-center">
               <div class="slide-scroll">
-                <div class="grid grid-cols-2 max-w-md mx-auto w-full">
+                <div class="connected-grid max-w-md mx-auto w-full" data-grid="illuminationColour">
                 <button class="tile sq px-4" data-choice="illuminationColour" data-value="Bright white">bright</button>
                 <button class="tile sq px-4" data-choice="illuminationColour" data-value="Warm white">warm</button>
-                <button class="tile sq px-4" data-choice="illuminationColour" data-value="RGB">rgb</button>
+                <button id="rgbTile" class="tile sq px-4 tile-stacked" data-choice="illuminationColour" data-value="RGB">
+                  <span>rgb</span>
+                  <span class="rgb-preview" aria-hidden="true"></span>
+                  <span id="rgbValue" class="tile-sub">choose colour</span>
+                </button>
+                <div class="tile sq tile-placeholder" aria-hidden="true"></div>
               </div>
+              <input type="color" id="rgbPicker" value="#ffffff" class="sr-only" aria-hidden="true">
               </div>
             </div>
           </section>
