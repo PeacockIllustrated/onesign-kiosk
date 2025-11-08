@@ -335,6 +335,95 @@ h1.panel-title {
   background: transparent; 
 }
 
+/* Grid spacing */
+.grid { 
+  gap: calc(var(--rhythm) * 1.25); 
+}
+
+.connected-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1px;
+  padding:1px;
+  border-radius:1.25rem;
+  background:#111;
+  overflow:hidden;
+  box-shadow:0 18px 48px rgba(0,0,0,.08);
+}
+.connected-grid .tile,
+.connected-grid .tile-placeholder{
+  border-radius:0;
+  border:none;
+  background:#f7f7f7;
+}
+.connected-grid .tile{
+  transition:background var(--transition-fast) ease, color var(--transition-fast) ease, transform var(--transition-fast) ease;
+}
+.connected-grid .tile-active{
+  background:#111 !important;
+  color:#fff !important;
+}
+.tile-stacked{
+  flex-direction:column;
+  gap:0.3rem;
+}
+.tile-sub{
+  font-size:0.85rem;
+  line-height:1.1;
+  font-weight:500;
+  color:#6b6b6b;
+  text-transform:none;
+}
+.tile-active .tile-sub{
+  color:rgba(255,255,255,0.7);
+}
+.tile-input{
+  gap:0.4rem;
+}
+.tile-input input{
+  width:100%;
+  max-width:120px;
+  border:2px solid #111;
+  border-radius:999px;
+  padding:0.4rem 0.75rem;
+  text-align:center;
+  font-size:1rem;
+  font-weight:600;
+  letter-spacing:.02em;
+  background:#fff;
+  color:#111;
+  transition:border var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
+}
+.tile-input input:focus{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(17,17,17,0.15);
+}
+.tile-input input::-webkit-outer-spin-button,
+.tile-input input::-webkit-inner-spin-button{
+  -webkit-appearance:none;
+  margin:0;
+}
+.tile-placeholder{
+  opacity:0.35;
+  pointer-events:none;
+}
+.tile-placeholder::after{
+  content:'';
+}
+.rgb-preview{
+  width:32px;
+  height:32px;
+  border-radius:999px;
+  border:2px solid #111;
+  background:conic-gradient(from 0deg, #ff0000, #00ff00, #0000ff, #ff0000);
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Progress dots spacing */
+#dots { 
+  margin-bottom: 0.75rem; /* space above arrows */
+}
+
 /* Letters track (full height; each .slide handles bottom padding) */
 #lwrap{
   height: 100%;
