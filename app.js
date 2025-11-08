@@ -72,10 +72,10 @@ function renderDots() {
   dots.innerHTML = Array.from({length: TOTAL}, (_,i)=>{
     const isActive = i === step;
     const canNavigate = i <= step || (i > step && canLeaveStep(step));
-    return `<button class="inline-block rounded-full ${isActive?'bg-black':'bg-black/20'}"
-             data-dot="${i}" role="tab" aria-selected="${isActive}"
-             ${!canNavigate ? 'disabled aria-disabled="true"' : ''}
-             style="width:8px;height:8px;${!canNavigate ? 'opacity:0.35;pointer-events:none;' : ''}"></button>`;
+    const disabledAttrs = !canNavigate ? 'disabled aria-disabled="true"' : '';
+    const inlineStyle = !canNavigate ? 'style="opacity:0.35;pointer-events:none;"' : '';
+    return `<button class="dot-indicator${isActive ? ' dot-indicator--active' : ''}"
+             data-dot="${i}" role="tab" aria-selected="${isActive}" ${disabledAttrs} ${inlineStyle}></button>`;
   }).join('');
 
   // Tappable dots: only allow navigation if current step is valid or going backward
