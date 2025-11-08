@@ -152,30 +152,15 @@
             </div>
             <div class="slide-center">
               <div class="slide-scroll">
-                <div class="connected-grid max-w-md mx-auto w-full" data-grid="height">
-                <button class="tile sq px-4 tile-stacked" data-choice="height" data-value="Small (10mm)">
-                  <span>small</span>
-                  <span class="tile-sub">10mm</span>
-                </button>
-                <button class="tile sq px-4 tile-stacked" data-choice="height" data-value="Medium (25mm)">
-                  <span>medium</span>
-                  <span class="tile-sub">25mm</span>
-                </button>
-                <button class="tile sq px-4 tile-stacked" data-choice="height" data-value="Large (50mm)">
-                  <span>large</span>
-                  <span class="tile-sub">50mm</span>
-                </button>
-                <button class="tile sq px-4 tile-stacked" data-choice="height" data-value="XL (75mm)">
-                  <span>xl</span>
-                  <span class="tile-sub">75mm</span>
-                </button>
-                <button class="tile sq px-4 tile-stacked" data-choice="height" data-value="Custom">
-                  <span>custom size</span>
-                  <span class="tile-sub">tap to enter</span>
-                </button>
-                <div class="tile sq tile-input tile-stacked" data-custom-input>
-                  <span class="tile-sub">value (mm)</span>
-                  <input id="heightCustom" type="number" min="5" placeholder="000" inputmode="numeric">
+                <div class="panel-grid panel-grid--two">
+                  <button class="tile tile--sizing" data-choice="height" data-value="Small (10mm)"><span class="tile-label">small</span><span class="tile-note">10mm</span></button>
+                  <button class="tile tile--sizing" data-choice="height" data-value="Medium (25mm)"><span class="tile-label">medium</span><span class="tile-note">25mm</span></button>
+                  <button class="tile tile--sizing" data-choice="height" data-value="Large (50mm)"><span class="tile-label">large</span><span class="tile-note">50mm</span></button>
+                  <button class="tile tile--sizing" data-choice="height" data-value="XL (75mm)"><span class="tile-label">x-large</span><span class="tile-note">75mm</span></button>
+                  <button class="tile tile--sizing" data-choice="height" data-value="Custom"><span class="tile-label">custom</span></button>
+                  <div class="tile tile--input tile--input-stretch">
+                    <input id="heightCustom" type="number" min="5" placeholder="mm" class="tile-input">
+                  </div>
                 </div>
               </div>
             </div>
@@ -207,17 +192,12 @@
             </div>
             <div class="slide-center">
               <div class="slide-scroll">
-                <div class="connected-grid max-w-md mx-auto w-full" data-grid="illuminationColour">
-                <button class="tile sq px-4" data-choice="illuminationColour" data-value="Bright white">bright</button>
-                <button class="tile sq px-4" data-choice="illuminationColour" data-value="Warm white">warm</button>
-                <button id="rgbTile" class="tile sq px-4 tile-stacked" data-choice="illuminationColour" data-value="RGB">
-                  <span>rgb</span>
-                  <span class="rgb-preview" aria-hidden="true"></span>
-                  <span id="rgbValue" class="tile-sub">choose colour</span>
-                </button>
-                <div class="tile sq tile-placeholder" aria-hidden="true"></div>
-              </div>
-              <input type="color" id="rgbPicker" value="#ffffff" class="sr-only" aria-hidden="true">
+                <div class="panel-grid panel-grid--two">
+                  <button class="tile" data-choice="illuminationColour" data-value="Bright white">bright</button>
+                  <button class="tile" data-choice="illuminationColour" data-value="Warm white">warm</button>
+                  <button class="tile" data-choice="illuminationColour" data-value="RGB">rgb</button>
+                  <button class="tile" data-choice="illuminationColour" data-value="Brand colour">brand</button>
+                </div>
               </div>
             </div>
           </section>
