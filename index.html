@@ -20,92 +20,75 @@
 </head>
 <body class="overflow-hidden">
 
-  <!-- Top Toolbar (safe-area aware) -->
-  <header id="topbar" class="topbar">
-    <div class="topbar__inner">
-      <img src="./OneSignSVG.svg" alt="Onesign" class="h-6 w-auto select-none" draggable="false" />
-      <div class="topbar__spacer"></div>
-      <button class="topbar__chip" aria-label="Language">EN</button>
-    </div>
-  </header>
-
+  <!-- Main viewport -->
   <div id="viewport" class="relative w-screen h-screen overflow-hidden">
 
     <!-- Gate Panel -->
-    <section id="gate" class="panel translate-x-0 flex flex-col items-center justify-center gap-8 px-8">
-      <h1 class="text-2xl font-semibold">welcome to onesign</h1>
-      <div class="flex flex-col gap-6 w-full max-w-md">
-        <button id="externalBtn" class="tile py-10 flex flex-col items-center justify-center transition-all duration-200">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mb-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M4.5 10.5v9.75A1.5 1.5 0 006 21.75h12a1.5 1.5 0 001.5-1.5v-9.75" />
-          </svg>
-          <span class="text-xl font-medium">External Signs</span>
-        </button>
-        <button id="internalBtn" class="tile py-10 flex flex-col items-center justify-center transition-all duration-200">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mb-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h18M3 9h18m-9 4.5h9m-9 4.5h9" />
-          </svg>
-          <span class="text-xl font-medium">Internal Signs</span>
-        </button>
+    <section id="gate" class="panel translate-x-0 flex flex-col gap-10">
+      <div class="panel-header">
+        <span class="panel-eyebrow">welcome to</span>
+        <h1 class="panel-title">onesign</h1>
       </div>
-      <div class="text-sm text-gray-500 mt-4">Tap to begin ▸</div>
+      <div class="panel-body">
+        <div class="panel-grid panel-grid--stack">
+          <button id="externalBtn" class="tile tile--stack">
+            <span>external<br>signs</span>
+          </button>
+          <button id="internalBtn" class="tile tile--stack">
+            <span>internal<br>signs</span>
+          </button>
+        </div>
+      </div>
+      <footer class="panel-footer">
+        <div class="panel-dots" aria-hidden="true">
+          <span class="dot dot--active"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </footer>
     </section>
 
     <!-- Catalogue Panel -->
-    <section id="catalogue" class="panel translate-x-full flex flex-col px-8">
-      <header class="mb-2 text-center">
-        <div class="heading"><span class="heading__pill">select a product type</span></div>
-      </header>
-
-      <!-- Centre the grid in the usable canvas -->
-      <div class="slide-center">
-        <div class="slide-scroll">
-          <div class="grid grid-cols-2 max-w-md mx-auto w-full">
-          <button id="lettersCard" class="tile sq flex flex-col items-center justify-center gap-3 transition-all" aria-label="Letters">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l7.5-15 7.5 15M6 16.5h12" />
-            </svg>
-            <span class="text-lg font-medium">Letters</span>
+    <section id="catalogue" class="panel translate-x-full flex flex-col gap-10">
+      <div class="panel-header">
+        <span class="panel-eyebrow">choose</span>
+        <h2 class="panel-title">product</h2>
+      </div>
+      <div class="panel-body">
+        <div class="panel-grid panel-grid--two">
+          <button id="lettersCard" class="tile" aria-label="Letters">
+            <span>letters</span>
           </button>
-          <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all" aria-label="Panel plus Letters">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><rect x="3" y="6" width="18" height="12" rx="2" /></svg>
-            <span class="text-lg font-medium">Panel + Letters</span>
+          <button class="tile" aria-label="Panel plus Letters">
+            <span>panel + letters</span>
           </button>
-          <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all" aria-label="Vinyl">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M3 12h18M3 18h18" /></svg>
-            <span class="text-lg font-medium">Vinyl</span>
+          <button class="tile" aria-label="Vinyl">
+            <span>vinyl</span>
           </button>
-          <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all" aria-label="Neon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m-9-9h18" /></svg>
-            <span class="text-lg font-medium">Neon</span>
+          <button class="tile" aria-label="Neon">
+            <span>neon</span>
           </button>
-          <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all" aria-label="Window Decal">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><rect x="5" y="5" width="14" height="14" rx="1.5" /></svg>
-            <span class="text-lg font-medium">Window Decal</span>
+          <button class="tile" aria-label="Window Decal">
+            <span>window decal</span>
           </button>
-          <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all" aria-label="Wayfinding">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v20M4 6h16M4 12h16M4 18h16" /></svg>
-            <span class="text-lg font-medium">Wayfinding</span>
+          <button class="tile" aria-label="Wayfinding">
+            <span>way-finding</span>
           </button>
-          <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all" aria-label="Point of Sale">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18v12H3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 9h12M6 15h12" /></svg>
-            <span class="text-lg font-medium">Point of Sale</span>
-          </button>
-          <button class="tile sq flex flex-col items-center justify-center gap-3 transition-all" aria-label="Internal Wall Signs">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14"><rect x="4" y="8" width="16" height="8" rx="1.5" /></svg>
-            <span class="text-lg font-medium">Internal Wall Signs</span>
-          </button>
-        </div>
         </div>
       </div>
-
-      <!-- Catalogue back -->
-      <div class="absolute left-0 right-0 flex items-center justify-center gap-10"
-           style="bottom: max(1rem, env(safe-area-inset-bottom));">
-        <button id="backFromCatalogue" aria-label="Back" class="border-2 border-black rounded-full w-14 h-14 flex items-center justify-center hover:bg-black hover:text-white transition active:scale-95">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
+      <footer class="panel-footer">
+        <button id="backFromCatalogue" aria-label="Back" class="circle-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
         </button>
-      </div>
+        <div class="panel-dots" aria-hidden="true">
+          <span class="dot dot--active"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+        <div class="circle-btn circle-btn--ghost" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l3 3"/></svg>
+        </div>
+      </footer>
     </section>
 
     <!-- Letters Panel -->
@@ -115,124 +98,143 @@
 
           <!-- 1. Material -->
           <section class="slide" data-step="0">
-            <div class="heading"><span class="heading__pill">letter material</span></div>
+            <div class="panel-header">
+              <span class="panel-eyebrow">material</span>
+              <h3 class="panel-title">letters</h3>
+            </div>
             <div class="slide-center">
               <div class="slide-scroll">
-                <div class="grid grid-cols-2 max-w-md mx-auto w-full">
-                <button class="tile sq px-4" data-choice="material" data-value="MDF">MDF</button>
-                <button class="tile sq px-4" data-choice="material" data-value="Acrylic">Acrylic</button>
-                <button class="tile sq px-4" data-choice="material" data-value="Metal">Metal</button>
-                <button class="tile sq px-4" data-choice="material" data-value="Foamex">Foamex</button>
-              </div>
+                <div class="panel-grid panel-grid--two">
+                  <button class="tile" data-choice="material" data-value="MDF">mdf</button>
+                  <button class="tile" data-choice="material" data-value="Acrylic">acrylic</button>
+                  <button class="tile" data-choice="material" data-value="Metal">metal</button>
+                  <button class="tile" data-choice="material" data-value="Foamex">foamex</button>
+                </div>
               </div>
             </div>
           </section>
 
           <!-- 2. Height -->
           <section class="slide" data-step="1">
-            <div class="heading"><span class="heading__pill">letter height</span></div>
+            <div class="panel-header">
+              <span class="panel-eyebrow">sizing</span>
+              <h3 class="panel-title">letters</h3>
+            </div>
             <div class="slide-center">
               <div class="slide-scroll">
-                <div class="grid grid-cols-2 max-w-md mx-auto w-full">
-                <button class="tile sq px-4" data-choice="height" data-value="Small (10mm)">Small<br/>(10mm)</button>
-                <button class="tile sq px-4" data-choice="height" data-value="Medium (25mm)">Medium<br/>(25mm)</button>
-                <button class="tile sq px-4" data-choice="height" data-value="Large (50mm)">Large<br/>(50mm)</button>
-                <button class="tile sq px-4" data-choice="height" data-value="XL (75mm)">XL<br/>(75mm)</button>
-                <div class="col-span-2 grid grid-cols-2">
-                  <button class="tile sq px-4" data-choice="height" data-value="Custom">Custom</button>
-                  <div class="tile sq">
-                    <input id="heightCustom" type="number" min="5" placeholder="mm" class="w-20 text-center border border-black/20 rounded-lg py-2">
+                <div class="panel-grid panel-grid--two">
+                  <button class="tile" data-choice="height" data-value="Small (10mm)">small<br><span class="tile-note">10mm</span></button>
+                  <button class="tile" data-choice="height" data-value="Medium (25mm)">medium<br><span class="tile-note">25mm</span></button>
+                  <button class="tile" data-choice="height" data-value="Large (50mm)">large<br><span class="tile-note">50mm</span></button>
+                  <button class="tile" data-choice="height" data-value="XL (75mm)">x-large<br><span class="tile-note">75mm</span></button>
+                  <button class="tile" data-choice="height" data-value="Custom">custom</button>
+                  <div class="tile tile--input tile--input-stretch">
+                    <input id="heightCustom" type="number" min="5" placeholder="mm" class="tile-input">
                   </div>
                 </div>
-              </div>
               </div>
             </div>
           </section>
 
           <!-- 3. Illumination Type -->
           <section class="slide" data-step="2">
-            <div class="heading"><span class="heading__pill">letter illumination</span></div>
+            <div class="panel-header">
+              <span class="panel-eyebrow">illumination</span>
+              <h3 class="panel-title">letters</h3>
+            </div>
             <div class="slide-center">
               <div class="slide-scroll">
-                <div class="grid grid-cols-2 max-w-md mx-auto w-full">
-                <button class="tile sq px-4" data-choice="illumination" data-value="Face illuminated">Face</button>
-                <button class="tile sq px-4" data-choice="illumination" data-value="Edge illuminated">Edge</button>
-                <button class="tile sq px-4" data-choice="illumination" data-value="Halo illuminated">Halo</button>
-                <button class="tile sq px-4" data-choice="illumination" data-value="No Illumination">None</button>
-              </div>
+                <div class="panel-grid panel-grid--two">
+                  <button class="tile" data-choice="illumination" data-value="Face illuminated">face</button>
+                  <button class="tile" data-choice="illumination" data-value="Edge illuminated">edge</button>
+                  <button class="tile" data-choice="illumination" data-value="Halo illuminated">halo</button>
+                  <button class="tile" data-choice="illumination" data-value="No Illumination">none</button>
+                </div>
               </div>
             </div>
           </section>
 
           <!-- 4. Illumination Colour -->
           <section class="slide" data-step="3">
-            <div class="heading"><span class="heading__pill">illumination colour</span></div>
+            <div class="panel-header">
+              <span class="panel-eyebrow">colour</span>
+              <h3 class="panel-title">illumination</h3>
+            </div>
             <div class="slide-center">
               <div class="slide-scroll">
-                <div class="grid grid-cols-2 max-w-md mx-auto w-full">
-                <button class="tile sq px-4" data-choice="illuminationColour" data-value="Bright white">Bright</button>
-                <button class="tile sq px-4" data-choice="illuminationColour" data-value="Warm white">Warm</button>
-                <button class="tile sq px-4" data-choice="illuminationColour" data-value="RGB">RGB</button>
-              </div>
+                <div class="panel-grid panel-grid--two">
+                  <button class="tile" data-choice="illuminationColour" data-value="Bright white">bright</button>
+                  <button class="tile" data-choice="illuminationColour" data-value="Warm white">warm</button>
+                  <button class="tile" data-choice="illuminationColour" data-value="RGB">rgb</button>
+                  <button class="tile" data-choice="illuminationColour" data-value="Brand colour">brand</button>
+                </div>
               </div>
             </div>
           </section>
 
           <!-- 5. Fixing -->
           <section class="slide" data-step="4">
-            <div class="heading"><span class="heading__pill">fixing method</span></div>
+            <div class="panel-header">
+              <span class="panel-eyebrow">fixing</span>
+              <h3 class="panel-title">method</h3>
+            </div>
             <div class="slide-center">
               <div class="slide-scroll">
-                <div class="grid grid-cols-2 max-w-md mx-auto w-full">
-                <button class="tile sq px-4" data-choice="fixing" data-value="Direct to wall">Direct</button>
-                <button class="tile sq px-4" data-choice="fixing" data-value="Aluminium wall spacers">Spacers</button>
-              </div>
+                <div class="panel-grid panel-grid--two">
+                  <button class="tile" data-choice="fixing" data-value="Direct to wall">direct</button>
+                  <button class="tile" data-choice="fixing" data-value="Aluminium wall spacers">spacers</button>
+                  <button class="tile" data-choice="fixing" data-value="Rails">rails</button>
+                  <button class="tile" data-choice="fixing" data-value="Tape">tape</button>
+                </div>
               </div>
             </div>
           </section>
 
           <!-- 6. Installation -->
           <section class="slide" data-step="5">
-            <div class="heading"><span class="heading__pill">installation</span></div>
+            <div class="panel-header">
+              <span class="panel-eyebrow">installation</span>
+              <h3 class="panel-title">support</h3>
+            </div>
             <div class="slide-center">
               <div class="slide-scroll">
-                <div id="installGrid" class="grid grid-cols-2 max-w-md mx-auto w-full">
-                <button class="tile sq px-4" data-choice="install" data-value="Yes">Install</button>
-                <button class="tile sq px-4" data-choice="install" data-value="Delivery with installation layout (+£35)">Layout +£35</button>
-                <button class="tile sq px-4 col-span-2" data-choice="install" data-value="Delivery">Delivery</button>
-              </div>
+                <div id="installGrid" class="panel-grid panel-grid--two">
+                  <button class="tile" data-choice="install" data-value="Yes">full install</button>
+                  <button class="tile" data-choice="install" data-value="Delivery with installation layout (+£35)">layout +£35</button>
+                  <button class="tile" data-choice="install" data-value="Self install">self install</button>
+                  <button class="tile" data-choice="install" data-value="Delivery">delivery only</button>
+                </div>
               </div>
             </div>
           </section>
 
           <!-- 7. Contact -->
           <section class="slide" data-step="6">
-            <div class="heading"><span class="heading__pill">contact</span></div>
+            <div class="panel-header">
+              <span class="panel-eyebrow">send</span>
+              <h3 class="panel-title">details</h3>
+            </div>
             <div class="slide-center">
               <div class="slide-scroll">
-                <div class="grid grid-cols-2 max-w-md mx-auto w-full">
-                <div class="tile sq"><input id="email" type="email" placeholder="Email" class="w-[80%] text-center border border-black/20 rounded-lg py-2"></div>
-                <div class="tile sq"><input id="postcode" type="text" placeholder="Postcode" class="w-[70%] text-center border border-black/20 rounded-lg py-2"></div>
-              </div>
+                <div class="panel-grid panel-grid--two">
+                  <div class="tile tile--input"><input id="email" type="email" placeholder="email" class="tile-input"></div>
+                  <div class="tile tile--input"><input id="postcode" type="text" placeholder="postcode" class="tile-input"></div>
+                </div>
               </div>
             </div>
           </section>
 
         </div>
 
-        <!-- Progress dots (tappable) -->
-        <div id="dots" class="absolute left-0 right-0 flex justify-center gap-2" style="bottom: calc(5.5rem + env(safe-area-inset-bottom));" role="tablist" aria-label="Progress"></div>
-
-        <!-- Bottom nav arrows -->
-        <div class="absolute left-0 right-0 flex items-center justify-center gap-10"
-             style="bottom: max(1rem, env(safe-area-inset-bottom));">
-          <button id="lettersBack" aria-label="Previous" class="navbtn">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
+        <footer class="letters-footer">
+          <button id="lettersBack" aria-label="Previous" class="circle-btn circle-btn--ghost">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
           </button>
-          <button id="lettersNext" aria-label="Next" class="navbtn navbtn--primary" disabled>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+          <div id="dots" class="panel-dots" role="tablist" aria-label="Progress"></div>
+          <button id="lettersNext" aria-label="Next" class="circle-btn" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
           </button>
-        </div>
+        </footer>
 
         <!-- Bottom Summary Sheet -->
         <div id="sheetWrap" class="pointer-events-none fixed inset-0 flex items-end justify-center" aria-hidden="true">
